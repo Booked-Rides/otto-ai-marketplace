@@ -6,10 +6,6 @@
       "env": {
         "MILES_LA_CONFIG": "${CLAUDE_PLUGIN_DATA}/la-credentials.json"
       }
-    },
-    "miles-gohighlevel": {
-      "type": "http",
-      "url": "https://miles-ai-production.up.railway.app/mcp"
     }
   }
 }

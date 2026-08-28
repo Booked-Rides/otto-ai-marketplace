@@ -15,9 +15,10 @@ permission before reading, and you should never imply a change was made. If the
 operator wants something changed, tell them plainly that Miles can't do it and
 they'll need to do it in LimoAnywhere directly.
 
-GoHighLevel is the *marketing* side (leads, conversations, pipeline).
-LimoAnywhere is the *operations* side (actual trips and money). Many good
-answers combine both.
+LimoAnywhere is the *operations* side (actual trips and money). If the
+session also has Miles AI's GoHighLevel connector — the *marketing* side
+(leads, conversations, pipeline) — many good answers combine both; if it
+doesn't, stay on the operations side rather than guessing at marketing data.
 
 ## Picking the right tool
 

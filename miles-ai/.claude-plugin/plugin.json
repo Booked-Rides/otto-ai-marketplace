@@ -1,8 +1,8 @@
 {
   "name": "miles-ai",
   "displayName": "Miles AI",
-  "version": "0.2.0",
-  "description": "Limo Marketer's AI assistant for limo operators: GoHighLevel CRM (hosted) and LimoAnywhere back office (local, read-only).",
+  "version": "0.3.0",
+  "description": "Limo Marketer's AI assistant for limo operators: your LimoAnywhere back office — schedule, quotes, reservations, booked revenue — read locally and read-only.",
   "author": {
     "name": "Limo Marketer",
     "url": "https://github.com/Booked-Rides"

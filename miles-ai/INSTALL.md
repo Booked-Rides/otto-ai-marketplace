@@ -1,18 +1,19 @@
-# Installing the Miles AI Cowork plugin (local testing)
+# Installing the Miles AI Cowork plugin
 
 This guide takes a clean checkout to a working plugin inside Claude Cowork. It
 assumes no prior context — if you're picking this up from someone else, start
 here.
 
-**What you're installing:** one plugin containing two halves.
+**What the plugin is:** the **LimoAnywhere** half of Miles AI. It runs *on the
+operator's machine* as a bundled MCP server, signed in as their own
+LimoAnywhere user, strictly read-only — trip calendar, quotes, reservations,
+booked revenue.
 
-- **LimoAnywhere** runs *on your machine* as a bundled MCP server, signed in as
-  your own LimoAnywhere user. Strictly read-only.
-- **GoHighLevel** runs *on Limo Marketer's hosted server* (Railway) and
-  authenticates through Booked Rides. The analysis and the write-approval gate
-  live there, not on your machine.
-
-Both install in a single step and appear together in one session.
+**What the plugin is not:** GoHighLevel. That half stays a **separate hosted
+MCP connector** on Limo Marketer's server (Railway), added by URL
+(`https://miles-ai-production.up.railway.app/mcp`) and authenticated through
+Booked Rides. The analysis and the write-approval gate live there. Operators
+can use the plugin with or without it.
 
 ---
 
@@ -20,13 +21,11 @@ Both install in a single step and appear together in one session.
 
 | Requirement | Notes |
 |---|---|
-| **Node.js 18+** | `node --version`. Needed to build; the plugin bundles its own copy of the compiled server. |
+| **Node.js 18+** | `node --version`. Needed to build, and the installed plugin currently uses the machine's `node` (Cowork launches the server on the host with the PATH's node). |
 | **Claude Cowork** | Any paid plan (Pro, Max, Team, Enterprise). Cowork is not available on Free. |
 | **Latest Claude Desktop** | Cowork requires it. |
-| **Windows only:** Virtual Machine Platform enabled | Cowork runs in a lightweight VM. Without this Windows feature it won't start. |
+| **Windows only:** Virtual Machine Platform enabled | Cowork's requirement. |
 | **A LimoAnywhere login** | Company ID, username, password — the three fields from the manage.mylimobiz.com form. **Use a dedicated view-only "Miles AI" user**, not an admin login. |
-| **A Booked Rides login** | For the hosted GoHighLevel connector. The account must have a GHL location linked, or the GHL tools will say so and stop. |
-| **The Railway domain** | See step 3. Ask whoever handed this off if you don't have it. |
 
 ---
 
@@ -46,7 +45,7 @@ which npm's scoped package directories use.) You should see:
 
 ```
 Verifying the packaged server starts standalone...
-  ok — 8 LimoAnywhere tools
+  ok — 10 LimoAnywhere tools
 
 Plugin package ready: plugins/miles-ai
 ```
@@ -66,53 +65,32 @@ npm run test:la-creds  # LimoAnywhere credential linking
 
 ---
 
-## 3. Set the hosted URL — required
+## 3. Install into Cowork
 
-Open `plugins/miles-ai/.mcp.json`. It ships with a placeholder:
+**Clients install from the marketplace** — one time, updates flow
+automatically:
 
-```json
-"url": "https://SET-YOUR-RAILWAY-DOMAIN-HERE/mcp"
+1. Claude Desktop → **Customize → Plugins → Add marketplace** →
+   `Booked-Rides/otto-ai-marketplace`.
+2. Install **Miles AI**.
+
+**For local testing of an unreleased build**, upload a zip instead. The
+contents must sit at the **root** of the archive (not wrapped in a
+`miles-ai/` folder) — the upload dialog accepts `.zip` only:
+
+```bash
+cd plugins/miles-ai && zip -r ../../miles-ai-plugin.zip . -x "*.DS_Store"
 ```
-
-Replace that host with the real Railway domain, then re-run
-`npm run plugin:build`. The build prints a warning while the placeholder is
-still in place.
-
-**If you skip this:** the LimoAnywhere half still works. The GoHighLevel half
-won't connect.
-
----
-
-## 4. Install into Cowork
-
-1. Zip the package so its contents sit at the **root** of the archive (not
-   wrapped in a `miles-ai/` folder) — the upload dialog accepts `.zip` only:
-
-   ```bash
-   cd plugins/miles-ai && zip -r ../../miles-ai-plugin.zip . -x "*.DS_Store"
-   ```
-
-2. Open Claude Desktop, then **Customize** in the sidebar, then **Plugins**.
-3. Choose the **upload** option (not the marketplace) and select
-   `miles-ai-plugin.zip`.
-
-> **Why upload rather than the marketplace?** `plugins/miles-ai/server/` is
-> generated and gitignored, so cloning the repo alone doesn't give you a
-> runnable plugin — you have to build it. A separate marketplace repo holding
-> built packages is the planned distribution path; it doesn't exist yet.
 
 After installing, open the plugin. You should see:
 
-- **Skills:** `gohighlevel`, `limoanywhere`
-- **Connectors:** `miles-limoanywhere` (local), `miles-gohighlevel` (remote)
+- **Skill:** `limoanywhere`
+- **Connector:** `miles-limoanywhere` (local)
 - **Commands:** `/miles-setup`, `/miles-doctor`
-
-If the GoHighLevel connector prompts you to sign in, that's the Booked Rides
-OAuth flow — use the test account.
 
 ---
 
-## 5. Connect LimoAnywhere
+## 4. Connect LimoAnywhere
 
 Run:
 
@@ -135,48 +113,52 @@ Claude will warn you before using it.)
 
 ---
 
-## 6. Verify
+## 5. Verify
 
 ```
 /miles-doctor
 ```
 
-This runs both health checks and reports in plain language. Healthy looks like:
-GoHighLevel connected and reading contacts, conversations and opportunities;
-LimoAnywhere logged in and reading quotes and the calendar.
-
-Then try a few real questions:
+Healthy looks like: LimoAnywhere logged in and reading quotes and the
+calendar. Then try:
 
 | Ask | Exercises |
 |---|---|
-| "What's on the calendar today?" | local LA server, calendar JSON endpoint |
-| "How many quote requests came in last week?" | local LA server, list scraping |
-| "Show me my new leads from the last 7 days" | hosted GHL connector |
-| "What does the pipeline look like?" | hosted GHL connector |
-| "Who should I follow up with today?" | the follow-up skill workflow |
+| "What's on the calendar today?" | calendar JSON endpoint |
+| "How many quote requests came in last week?" | list scraping |
+| "How much is booked for next month?" | revenue summary |
+| "Which quotes didn't convert?" | quote conversion report |
+
+## 6. Optional: the GoHighLevel connector
+
+The marketing half (leads, conversations, pipeline, the approval-gated
+writes) is a separate remote connector, not part of this plugin. Add it in
+Claude's connector settings by URL:
+
+```
+https://miles-ai-production.up.railway.app/mcp
+```
+
+It authenticates through the operator's Booked Rides login. `/miles-doctor`
+will include it in its report whenever it's present.
 
 ---
 
 ## What the first install test found (macOS, Aug 2026)
 
-The two questions this test existed to answer are now answered — on macOS.
-
-**1. Does Cowork run the bundled Node server?** Yes — but not in a sandbox.
-Claude Desktop launches it **directly on the host machine**, as the local
-user, using whatever `node` is on the PATH (an nvm install, in the test).
-Implication for distribution: a client without Node installed will see the
-connector fail to start; bundling a runtime (per-OS) remains the fix for that.
-
-**2. Is outbound HTTPS to `manage.mylimobiz.com` possible?** Yes — the server
-runs on the host, so it logs in from the operator's own IP exactly as
-designed. Verified with a live login, quote read, and calendar read.
-
-**Also learned:** Cowork passes the connector's `env` through **without
-defining `${CLAUDE_PLUGIN_DATA}`**, so `MILES_LA_CONFIG` arrives as a literal
-unexpanded string. The server therefore treats any value containing `${` as
-unset and falls back to `~/.claude/plugins/data/miles-ai/la-credentials.json`.
-Windows and Linux (via Claude Code) remain untested — report findings from
-those.
+- **Cowork runs the bundled Node server, but not in a sandbox.** Claude
+  Desktop launches it **directly on the host machine**, as the local user,
+  using whatever `node` is on the PATH (an nvm install, in the test).
+  Implication: a client without Node installed will see the connector fail to
+  start; bundling a runtime (per-OS) remains the fix for that.
+- **Outbound HTTPS to `manage.mylimobiz.com` works** — the server runs on the
+  host, so it logs in from the operator's own IP exactly as designed.
+- **Cowork passes the connector's `env` through without defining
+  `${CLAUDE_PLUGIN_DATA}`**, so `MILES_LA_CONFIG` arrives as a literal
+  unexpanded string. The server treats any value containing `${` as unset and
+  falls back to `~/.claude/plugins/data/miles-ai/la-credentials.json`.
+- Windows and Linux (via Claude Code) remain untested — report findings from
+  those.
 
 ---
 
@@ -185,14 +167,11 @@ those.
 | Symptom | Cause and fix |
 |---|---|
 | `plugin:build` says `dist/laServer.js is missing` | Run `npm run build` first, or use `npm run plugin:build`, which does both. |
-| Build warns about `SET-YOUR-RAILWAY-DOMAIN-HERE` | Step 3 wasn't done. LimoAnywhere works; GoHighLevel won't. |
-| Plugin installs but shows no connectors | Check `plugins/miles-ai/server/laServer.mjs` exists. If not, the build didn't finish. |
+| Plugin installs but shows no connector | Check `plugins/miles-ai/server/laServer.mjs` exists. If not, the build didn't finish. |
 | Upload rejected: "path with invalid characters" | The zip contains `node_modules` (or other `@`-prefixed paths) from an old build. Re-run `npm run plugin:build` and re-zip. |
-| `miles-limoanywhere` fails to start | Sandbox runtime problem — that's finding #1 above. Report it. |
-| LA tools say "isn't connected yet" | Run `/miles-setup` — its `la_connect` call verifies and saves the login, live immediately. If it claims success but tools still say this, check the file exists at `~/.claude/plugins/data/miles-ai/la-credentials.json` — the server's default. (Cowork does not expand `${CLAUDE_PLUGIN_DATA}` in the connector's `MILES_LA_CONFIG`, so the env var is ignored unless it's a real path.) |
+| `miles-limoanywhere` fails to start | Most likely no `node` on the machine's PATH. |
+| LA tools say "isn't connected yet" | Run `/miles-setup` — its `la_connect_start` page verifies and saves the login, live immediately. If it claims success but tools still say this, check the file exists at `~/.claude/plugins/data/miles-ai/la-credentials.json` — the server's default. (Cowork does not expand `${CLAUDE_PLUGIN_DATA}` in the connector's `MILES_LA_CONFIG`, so the env var is ignored unless it's a real path.) |
 | LA says the login was rejected | Wrong credentials, a changed password, or a user without permission for the quotes and calendar screens. |
-| GHL says the account isn't linked | The Booked Rides account has no GHL location linked. Not fixable locally — needs Limo Marketer support. |
-| GHL asks you to sign in repeatedly | The connector's OAuth grant expired or was revoked. Reconnect under Customize → Plugins. |
 
 ---
 
@@ -201,14 +180,16 @@ those.
 If you're working on this rather than only testing it:
 
 - `src/laServer.ts` — the local LimoAnywhere MCP server entrypoint. Registers
-  only `LA_TOOLS`, and deliberately has no GoHighLevel credential, vault, or
-  write gate available to it.
+  only `LA_TOOLS` + `LA_SETUP_TOOLS`, and deliberately has no GoHighLevel
+  credential, vault, or write gate available to it.
 - `src/la/` — the LimoAnywhere access layer. **Read-only by construction:**
   every request funnels through `laFetch`, whose `LA_READ_ALLOWLIST` refuses
   anything not on the known read screens. `npm run test:isolation` audits this.
-- `src/tools/limoanywhere/` — the eight `la_*` tools.
-- `plugins/miles-ai/` — the plugin package (skills, commands, manifests).
+- `src/tools/limoanywhere/` — the eight `la_*` read tools plus the two setup
+  tools (`la_connect_start`, `la_connect`).
+- `plugins/miles-ai/` — the plugin package (skill, commands, manifests).
 - `scripts/build-plugin.mjs` — assembles and verifies the package.
+- `scripts/release-plugin.mjs` — stages a release into the marketplace repo.
 - `.claude/plan/distribution-model-review.md` — why the surfaces split this way.
 
 Read `CLAUDE.md` at the repo root before changing anything. It documents the
