@@ -6,9 +6,9 @@
   },
   "plugins": [
     {
-      "name": "miles-ai",
-      "source": "./miles-ai",
-      "displayName": "Miles AI",
+      "name": "otto-ai-plugin",
+      "source": "./otto-ai-plugin",
+      "displayName": "Otto AI",
       "description": "Ask questions about your LimoAnywhere back office — today's schedule, quote requests, reservations, and booked revenue. Local and read-only.",
       "version": "0.3.0",
       "category": "productivity",
