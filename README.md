@@ -26,28 +26,7 @@ In **Claude Desktop** (any paid plan):
 Then try: *"What's on the calendar today?"* or *"How much is booked for next
 month?"* Run `/miles-doctor` any time to check the connection.
 
-## The GoHighLevel side (optional, separate)
-
-Leads, conversations, and pipeline live in a separate hosted connector — not
-in this plugin. Add it in Claude's connector settings by URL:
-
-```
-https://miles-ai-production.up.railway.app/mcp
-```
-
-It signs in with your Booked Rides account. With both connected, Miles can
-answer across marketing and operations together.
-
 ## Updates
 
 When a new version is published here, Claude shows an update for Miles AI
 under **Customize → Plugins** — one click, and your saved login is untouched.
-
-## For Limo Marketer engineers
-
-This repo holds the **built** package — clients can't run a build. Don't edit
-`miles-ai/` here by hand: it's generated from the
-[miles-ai](https://github.com/Booked-Rides/miles-ai) repo by
-`npm run plugin:release`, which rebuilds, verifies the packaged server boots,
-refuses to reuse a version number, and stages the copy here for you to review
-and push.
