@@ -2,7 +2,7 @@
 
 Limo Marketer's plugin marketplace for Claude. It currently ships one plugin:
 
-**Otto AI** — ask questions about your LimoAnywhere back office: today's
+**Otto AI by Limo Marketer** — ask questions about your LimoAnywhere back office: today's
 schedule, quote requests, reservations, and booked revenue. It runs on your
 own computer, signed in as your own LimoAnywhere user, and is strictly
 read-only.
@@ -19,12 +19,12 @@ In **Claude Desktop** (any paid plan):
    ```
 
 3. Install **Otto AI**.
-4. In a session, run `/miles-setup` to connect LimoAnywhere — Claude gives you
+4. In a session, run `/otto-setup` to connect LimoAnywhere — Claude gives you
    a link to a page on your own computer where you enter your LimoAnywhere
    login. It's saved only on your machine.
 
 Then try: *"What's on the calendar today?"* or *"How much is booked for next
-month?"* Run `/miles-doctor` any time to check the connection.
+month?"* Run `/otto-doctor` any time to check the connection.
 
 ## Updates
 
