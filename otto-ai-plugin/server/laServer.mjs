@@ -21662,7 +21662,7 @@ async function upsertLocationRow(db, row) {
 async function getCompanyToken(db, apiBase, app) {
   const rows = await sbSelect(db, COMPANY_TABLE, "select=*&limit=2");
   if (rows.length === 0) {
-    throw new Error("The Miles AI app isn't installed for this agency yet \u2014 please contact Limo Marketer support to finish setup.");
+    throw new Error("The Otto AI app isn't installed for this agency yet \u2014 please contact Limo Marketer support to finish setup.");
   }
   if (rows.length > 1) {
     throw new Error("Multiple agency connections found \u2014 contact Limo Marketer support.");
@@ -21702,7 +21702,7 @@ async function mintLocationToken(db, apiBase, app, locationId) {
   });
   if (!res.ok) {
     const body = await res.text().catch(() => "");
-    throw new Error(res.status < 500 ? "The Miles AI app isn't installed on this GoHighLevel account yet \u2014 please contact Limo Marketer support to finish setup." : `GHL location token mint failed (HTTP ${res.status}): ${body.slice(0, 200)}`);
+    throw new Error(res.status < 500 ? "The Otto AI app isn't installed on this GoHighLevel account yet \u2014 please contact Limo Marketer support to finish setup." : `GHL location token mint failed (HTTP ${res.status}): ${body.slice(0, 200)}`);
   }
   const minted = await res.json();
   const expiresAtMs = Date.now() + minted.expires_in * 1e3;
@@ -22228,7 +22228,7 @@ function fmtMinutes(mins) {
 }
 
 // dist/tools/core/writeCommon.js
-var NO_WRITES_MESSAGE = "Writes aren't available on this connection \u2014 reconnect Miles AI through the normal login and try again.";
+var NO_WRITES_MESSAGE = "Writes aren't available on this connection \u2014 reconnect Otto AI through the normal login and try again.";
 function confirmFooter(code, expiresAt) {
   return [
     "",
@@ -22507,7 +22507,7 @@ async function checkConnection(cfg2) {
   const passed = required2.filter((c) => c.ok).length;
   const allGood = passed === required2.length;
   const lines = [];
-  lines.push(allGood ? "## \u2705 Miles AI is connected and ready" : "## \u26A0\uFE0F Miles AI setup isn't finished yet");
+  lines.push(allGood ? "## \u2705 Otto AI is connected and ready" : "## \u26A0\uFE0F Otto AI setup isn't finished yet");
   lines.push("");
   for (const c of checks) {
     const mark = c.ok ? "\u2705" : c.optional ? "\u26A0\uFE0F" : "\u274C";
@@ -22524,8 +22524,8 @@ async function checkConnection(cfg2) {
 }
 var checkConnectionTool = {
   name: "check_connection",
-  title: "Check Miles AI connection",
-  description: "Health check for the Miles AI setup. Verifies the settings, the GoHighLevel token, and that each kind of data (contacts, conversations, opportunities, calendar, users) can be read. Use this whenever setup status is in question or another tool reports a problem.",
+  title: "Check Otto AI connection",
+  description: "Health check for the Otto AI setup. Verifies the settings, the GoHighLevel token, and that each kind of data (contacts, conversations, opportunities, calendar, users) can be read. Use this whenever setup status is in question or another tool reports a problem.",
   kind: "read",
   inputSchema: {},
   handler: ({ cfg: cfg2 }) => checkConnection(cfg2)
@@ -22614,10 +22614,10 @@ function tenantProblem(cfg2) {
   if (missing.length === 0)
     return null;
   if (cfg2.mode === "http") {
-    return "Your Miles AI connection isn't fully set up on our side yet \u2014 your account doesn't have a GoHighLevel location linked. Please contact Limo Marketer support.";
+    return "Your Otto AI connection isn't fully set up on our side yet \u2014 your account doesn't have a GoHighLevel location linked. Please contact Limo Marketer support.";
   }
   const envPath2 = cfg2.envFile?.path ?? ".env";
-  return `Miles AI isn't fully set up yet. Missing in the .env file: ${missing.join(" and ")}.
+  return `Otto AI isn't fully set up yet. Missing in the .env file: ${missing.join(" and ")}.
 
 Open ${envPath2} in any text editor, fill in the value(s) after the = sign (the comments in that file explain each one), save, then restart Claude Desktop. You can run the check_connection tool afterwards to confirm everything works.`;
 }
@@ -24099,7 +24099,7 @@ var prepareSendMessageTool = {
       const contact = res.contact;
       const name = contactDisplayName(contact);
       if (contact.dnd) {
-        return `${name} has "do not disturb" turned on in GoHighLevel \u2014 they opted out of messages, so Miles won't prepare one.`;
+        return `${name} has "do not disturb" turned on in GoHighLevel \u2014 they opted out of messages, so Otto won't prepare one.`;
       }
       if (channel === "sms" && !contact.phone) {
         return `${name} has no phone number on file, so an SMS can't be sent. Try email instead, or update their contact record first.`;
@@ -24379,9 +24379,9 @@ function laProblem(cfg2) {
     return cfg2.setupHint;
   if (cfg2.mode === "http") {
     if (cfg2.laVault) {
-      return "LimoAnywhere isn't connected for your account yet. Open the Miles AI page in your Booked Rides portal, link your LimoAnywhere login under the LimoAnywhere card, then try again.";
+      return "LimoAnywhere isn't connected for your account yet. Open the Otto AI page in your Booked Rides portal, link your LimoAnywhere login under the LimoAnywhere card, then try again.";
     }
-    return "LimoAnywhere isn't connected for your Miles AI login yet \u2014 please contact Limo Marketer support to link it.";
+    return "LimoAnywhere isn't connected for your Otto AI login yet \u2014 please contact Limo Marketer support to link it.";
   }
   const envPath2 = cfg2.envFile?.path ?? ".env";
   return `LimoAnywhere isn't set up yet. Add LA_COMPANY_ID, LA_USERNAME and LA_PASSWORD to ${envPath2} (the same three things typed into the manage.mylimobiz.com login form), save, then restart Claude Desktop. Run la_check_connection afterwards to confirm.`;
@@ -24455,7 +24455,7 @@ var LA_READ_ALLOWLIST = {
 function assertReadOnly(path3, url, opts) {
   const rule = LA_READ_ALLOWLIST[url.pathname];
   const refuse = (why) => {
-    throw new LaError(403, why, path3, `Refused by Miles's read-only guard: ${why}. Miles never changes anything in LimoAnywhere \u2014 it only reads.`);
+    throw new LaError(403, why, path3, `Refused by Otto's read-only guard: ${why}. Otto never changes anything in LimoAnywhere \u2014 it only reads.`);
   };
   if (!rule)
     refuse(`"${url.pathname}" isn't an allowlisted read screen`);
@@ -24650,7 +24650,7 @@ async function markLaCredsStatus(db, locationId, status) {
 }
 
 // dist/tools/limoanywhere/laCommon.js
-var REAUTH_MESSAGE = "LimoAnywhere rejected the saved login \u2014 the password was probably changed. Open the Miles AI page in your Booked Rides portal and re-link LimoAnywhere under the LimoAnywhere card, then try again.";
+var REAUTH_MESSAGE = "LimoAnywhere rejected the saved login \u2014 the password was probably changed. Open the Otto AI page in your Booked Rides portal and re-link LimoAnywhere under the LimoAnywhere card, then try again.";
 var DISABLED_MESSAGE = "The LimoAnywhere connection for your account is currently disabled \u2014 please contact Limo Marketer support.";
 async function resolveLaAccess(cfg2) {
   if (cfg2.la)
@@ -24780,7 +24780,7 @@ function closeActivePage() {
 var escapeHtml2 = (s) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c] ?? c);
 var page = (body) => `<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Miles AI \u2014 Connect LimoAnywhere</title>
+<title>Otto AI \u2014 Connect LimoAnywhere</title>
 <style>
   body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f5f4f0;
        display:flex;justify-content:center;padding:48px 16px;color:#1a1a18}
@@ -24797,7 +24797,7 @@ var page = (body) => `<!doctype html><html lang="en"><head><meta charset="utf-8"
 </style></head><body><div class="card">${body}</div></body></html>`;
 var formPage = (token, error2) => page(`<h1>Connect LimoAnywhere</h1>
 <p>Enter the same three things you type at manage.mylimobiz.com. This page is served
-by the Miles AI plugin on this computer \u2014 the login is verified with LimoAnywhere,
+by the Otto AI plugin on this computer \u2014 the login is verified with LimoAnywhere,
 then saved only on this machine. It is not sent to Limo Marketer or into the chat.</p>
 ${error2 ? `<div class="err">${escapeHtml2(error2)}</div>` : ""}
 <form method="post">
@@ -24816,7 +24816,7 @@ var successPage = () => page(`<h1>Connected \u2713</h1>
 no restart needed.</p>`);
 var expiredPage = () => page(`<h1>Link expired</h1>
 <p>This setup link has expired or was already used. Go back to Claude and run
-<strong>/miles-setup</strong> again to get a fresh one.</p>`);
+<strong>/otto-setup</strong> again to get a fresh one.</p>`);
 async function readBody(req) {
   const chunks = [];
   let size = 0;
@@ -24903,7 +24903,7 @@ var laConnectStartTool = {
     return [
       `The setup page is ready: ${url}`,
       "Give the operator that link and have them open it in a browser on this machine.",
-      "It's served by the Miles AI plugin itself, so the login goes straight from",
+      "It's served by the Otto AI plugin itself, so the login goes straight from",
       "their browser to a file on this machine \u2014 never through this chat.",
       `The link expires in ${expiresMinutes} minutes or after one successful connection`,
       "(call la_connect_start again for a fresh one).",
@@ -29880,7 +29880,7 @@ var GHL_TOOLS = [...GHL_READ_TOOLS, ...GHL_WRITE_TOOLS];
 
 // dist/server/mcp.js
 var DEFAULT_INSTRUCTIONS = [
-  "Miles AI gives you a limo operator's CRM (GoHighLevel). These tools are",
+  "Otto AI gives you a limo operator's CRM (GoHighLevel). These tools are",
   "building blocks, not fixed reports \u2014 compose them. Enumerate with the",
   "list/get tools, then read individual threads with get_conversation to",
   "answer questions no single tool covers. When a scan stops early it tells",
@@ -29897,6 +29897,7 @@ var DEFAULT_INSTRUCTIONS = [
 function buildMcpServer(cfg2, onToolCall, gate, opts = {}) {
   const server2 = new McpServer({
     name: opts.name ?? "otto-ai-mcp",
+    title: opts.title ?? "Otto AI",
     version: "0.1.0"
   }, {
     instructions: opts.instructions ?? DEFAULT_INSTRUCTIONS
@@ -29917,7 +29918,7 @@ function buildMcpServer(cfg2, onToolCall, gate, opts = {}) {
           content: [
             {
               type: "text",
-              text: `Something went wrong inside Miles AI: ${err.message}. Try the check_connection tool to diagnose.`
+              text: `Something went wrong inside Otto AI: ${err.message}. Try the check_connection tool to diagnose.`
             }
           ],
           isError: true
@@ -29929,7 +29930,7 @@ function buildMcpServer(cfg2, onToolCall, gate, opts = {}) {
 }
 
 // dist/laServer.js
-var SETUP_HINT = "LimoAnywhere isn't connected yet. Run the /miles-setup command \u2014 or call la_connect_start \u2014 to get a one-time link to a setup page on this machine, where the operator types their manage.mylimobiz.com login (company ID, username, password) into a normal browser form; the password never appears in this conversation. Recommend a dedicated view-only LimoAnywhere user rather than an admin login. The login is verified, then saved only on this machine.";
+var SETUP_HINT = "LimoAnywhere isn't connected yet. Run the /otto-setup command \u2014 or call la_connect_start \u2014 to get a one-time link to a setup page on this machine, where the operator types their manage.mylimobiz.com login (company ID, username, password) into a normal browser form; the password never appears in this conversation. Recommend a dedicated view-only LimoAnywhere user rather than an admin login. The login is verified, then saved only on this machine.";
 var LA_INSTRUCTIONS = [
   "These tools read a limo operator's LimoAnywhere back office (reservations,",
   "quotes, and the trip calendar). They are STRICTLY READ-ONLY \u2014 nothing here",
@@ -29962,6 +29963,7 @@ var cfg = {
 var server = buildMcpServer(cfg, void 0, void 0, {
   tools: [...LA_TOOLS, ...LA_SETUP_TOOLS],
   name: "otto-limoanywhere",
+  title: "Otto AI by Limo Marketer",
   instructions: LA_INSTRUCTIONS
 });
 await server.connect(new StdioServerTransport());

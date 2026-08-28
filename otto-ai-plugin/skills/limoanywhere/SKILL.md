@@ -101,7 +101,7 @@ operator acts on it.
 `la_check_connection` verifies the saved login works and that both quotes and
 the calendar can be read. If the login is being rejected, LimoAnywhere is
 usually the cause — a changed password, or a user whose permissions were
-reduced. The fix is `/miles-setup` again with current credentials.
+reduced. The fix is `/otto-setup` again with current credentials.
 
 LimoAnywhere is an older system and does go down; `la_check_connection`
 distinguishes "our login is wrong" from "LimoAnywhere is having trouble."

@@ -17,9 +17,9 @@ internally.
 Then summarize as a short status, one line per system, and give **one** clear
 next step if anything is broken. Common cases:
 
-- *LimoAnywhere says it isn't connected* → run `/miles-setup`.
+- *LimoAnywhere says it isn't connected* → run `/otto-setup`.
 - *LimoAnywhere rejects the login* → the password likely changed. Run
-  `/miles-setup` again with current credentials.
+  `/otto-setup` again with current credentials.
 - *LimoAnywhere is erroring or timing out* → their system may be down; check
   status.limoanywhere.com and try again shortly.
 - *GoHighLevel (if connected) says the login isn't linked* → Limo Marketer

@@ -86,7 +86,7 @@ After installing, open the plugin. You should see:
 
 - **Skill:** `limoanywhere`
 - **Connector:** `otto-limoanywhere` (local)
-- **Commands:** `/miles-setup`, `/miles-doctor`
+- **Commands:** `/otto-setup`, `/otto-doctor`
 
 ---
 
@@ -95,7 +95,7 @@ After installing, open the plugin. You should see:
 Run:
 
 ```
-/miles-setup
+/otto-setup
 ```
 
 Claude calls the plugin's `la_connect_start` tool and gives you a one-time
@@ -116,7 +116,7 @@ Claude will warn you before using it.)
 ## 5. Verify
 
 ```
-/miles-doctor
+/otto-doctor
 ```
 
 Healthy looks like: LimoAnywhere logged in and reading quotes and the
@@ -139,7 +139,7 @@ Claude's connector settings by URL:
 https://miles-ai-production.up.railway.app/mcp
 ```
 
-It authenticates through the operator's Booked Rides login. `/miles-doctor`
+It authenticates through the operator's Booked Rides login. `/otto-doctor`
 will include it in its report whenever it's present.
 
 ---
@@ -170,7 +170,7 @@ will include it in its report whenever it's present.
 | Plugin installs but shows no connector | Check `plugins/otto-ai-plugin/server/laServer.mjs` exists. If not, the build didn't finish. |
 | Upload rejected: "path with invalid characters" | The zip contains `node_modules` (or other `@`-prefixed paths) from an old build. Re-run `npm run plugin:build` and re-zip. |
 | `otto-limoanywhere` fails to start | Most likely no `node` on the machine's PATH. |
-| LA tools say "isn't connected yet" | Run `/miles-setup` — its `la_connect_start` page verifies and saves the login, live immediately. If it claims success but tools still say this, check the file exists at `~/.claude/plugins/data/otto-ai-plugin/la-credentials.json` — the server's default. (Cowork does not expand `${CLAUDE_PLUGIN_DATA}` in the connector's `MILES_LA_CONFIG`, so the env var is ignored unless it's a real path.) |
+| LA tools say "isn't connected yet" | Run `/otto-setup` — its `la_connect_start` page verifies and saves the login, live immediately. If it claims success but tools still say this, check the file exists at `~/.claude/plugins/data/otto-ai-plugin/la-credentials.json` — the server's default. (Cowork does not expand `${CLAUDE_PLUGIN_DATA}` in the connector's `MILES_LA_CONFIG`, so the env var is ignored unless it's a real path.) |
 | LA says the login was rejected | Wrong credentials, a changed password, or a user without permission for the quotes and calendar screens. |
 
 ---

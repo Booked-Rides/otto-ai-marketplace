@@ -11,8 +11,8 @@ the way they do.
 |---|---|---|
 | `skills/gohighlevel` | CRM playbooks — leads, conversations, pipeline, the approval-gated write flow | talks to the **hosted** server |
 | `skills/limoanywhere` | Back-office playbooks — schedule, quotes, reservations, revenue | talks to the **local** server |
-| `commands/miles-setup` | Captures the operator's LimoAnywhere login | local |
-| `commands/miles-doctor` | End-to-end diagnostic across both connections | both |
+| `commands/otto-setup` | Captures the operator's LimoAnywhere login | local |
+| `commands/otto-doctor` | End-to-end diagnostic across both connections | both |
 | `otto-limoanywhere` (`.mcp.json`) | Bundled stdio server, read-only | operator's machine |
 | `otto-ai-mcp` (hosted, separate) | Remote connector, OAuth via Booked Rides | Railway |
 
