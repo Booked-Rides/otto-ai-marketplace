@@ -9,7 +9,7 @@
       "name": "miles-ai",
       "source": "./miles-ai",
       "displayName": "Miles AI",
-      "description": "Ask questions about your leads, pipeline, quotes, reservations and schedule — across GoHighLevel and LimoAnywhere.",
+      "description": "Ask questions about your LimoAnywhere back office — today's schedule, quote requests, reservations, and booked revenue. Local and read-only.",
       "version": "0.3.0",
       "category": "productivity",
       "keywords": [
