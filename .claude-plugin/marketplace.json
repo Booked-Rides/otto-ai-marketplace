@@ -1,0 +1,22 @@
+{
+  "name": "otto-ai",
+  "owner": {
+    "name": "Limo Marketer",
+    "url": "https://github.com/Booked-Rides"
+  },
+  "plugins": [
+    {
+      "name": "miles-ai",
+      "source": "./miles-ai",
+      "displayName": "Miles AI",
+      "description": "Ask questions about your leads, pipeline, quotes, reservations and schedule — across GoHighLevel and LimoAnywhere.",
+      "version": "0.2.0",
+      "category": "productivity",
+      "keywords": [
+        "limo",
+        "crm",
+        "dispatch"
+      ]
+    }
+  ]
+}
