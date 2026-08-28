@@ -10,7 +10,7 @@
       "source": "./otto-ai-plugin",
       "displayName": "Otto AI",
       "description": "Ask questions about your LimoAnywhere back office — today's schedule, quote requests, reservations, and booked revenue. Local and read-only.",
-      "version": "0.3.0",
+      "version": "0.4.0",
       "category": "productivity",
       "keywords": [
         "limo",

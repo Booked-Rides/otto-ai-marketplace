@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "otto-limoanywhere": {
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/server/laServer.mjs"],
+      "env": {
+        "MILES_LA_CONFIG": "${CLAUDE_PLUGIN_DATA}/la-credentials.json"
+      }
+    }
+  }
+}

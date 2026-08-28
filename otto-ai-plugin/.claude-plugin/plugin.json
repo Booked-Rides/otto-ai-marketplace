@@ -1,0 +1,12 @@
+{
+  "name": "otto-ai-plugin",
+  "displayName": "Otto AI",
+  "version": "0.4.0",
+  "description": "Limo Marketer's AI assistant for limo operators: your LimoAnywhere back office — schedule, quotes, reservations, booked revenue — read locally and read-only.",
+  "author": {
+    "name": "Limo Marketer",
+    "url": "https://github.com/Booked-Rides"
+  },
+  "repository": "https://github.com/Booked-Rides/miles-ai",
+  "keywords": ["limo", "crm", "gohighlevel", "limoanywhere", "dispatch"]
+}
