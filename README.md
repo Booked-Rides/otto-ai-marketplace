@@ -11,15 +11,20 @@ read-only.
 
 In **Claude Desktop** (any paid plan):
 
-1. Open **Customize → Plugins**.
-2. Choose **Add marketplace** and enter:
+1. Make sure Cowork runs **on your computer**, not in the cloud: open
+   **Settings → Cowork**, turn **off** "Run new tasks in the cloud", then
+   fully quit and reopen Claude Desktop. (Otto AI's LimoAnywhere connection
+   runs locally on your machine — that's what keeps your login private — so
+   cloud sessions can't use it.)
+2. Open **Customize → Plugins**.
+3. Choose **Add marketplace** and enter:
 
    ```
    Booked-Rides/otto-ai-marketplace
    ```
 
-3. Install **Otto AI**.
-4. In a session, run `/otto-setup` to connect LimoAnywhere — Claude gives you
+4. Install **Otto AI by Limo Marketer**.
+5. In a session, run `/otto-setup` to connect LimoAnywhere — Claude gives you
    a link to a page on your own computer where you enter your LimoAnywhere
    login. It's saved only on your machine.
 
