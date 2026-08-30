@@ -131,7 +131,29 @@ calendar. Then try:
 | "How much is booked for next month?" | revenue summary |
 | "Which quotes didn't convert?" | quote conversion report |
 
-## 6. Optional: the GoHighLevel connector
+## 6. Updates
+
+Pushing a release to the marketplace repo is **not** enough for clients to
+receive it: Claude Desktop keeps auto-update **off by default for third-party
+marketplaces**, and the local marketplace clone
+(`~/.claude/plugins/marketplaces/otto-ai`) stays frozen at the install-day
+commit until something refreshes it. Three ways an update actually lands:
+
+1. **`/otto-update`** (ships with the plugin since v0.6.0) — refreshes the
+   marketplace clone, updates the installed files, and tells the operator to
+   restart. This is what to tell clients.
+2. The operator enables **auto-update for the otto-ai marketplace** in the
+   plugin manager — then updates install themselves shortly after a session
+   starts (a restart still activates them).
+3. The built-in `/plugin marketplace update otto-ai` typed by the operator.
+
+**Installs from before the `otto-ai-plugin` rename** (installed as
+`miles-ai@otto-ai`) have no update path at all — the name no longer exists in
+the marketplace. One-time fix: uninstall the old plugin, reinstall **Otto AI
+by Limo Marketer** from the marketplace. The saved LimoAnywhere login
+survives (the server reads the legacy credentials path).
+
+## 7. Optional: the GoHighLevel connector
 
 The marketing half (leads, conversations, pipeline, the approval-gated
 writes) is a separate remote connector, not part of this plugin. Add it in
@@ -159,8 +181,26 @@ will include it in its report whenever it's present.
   `${CLAUDE_PLUGIN_DATA}`**, so `MILES_LA_CONFIG` arrives as a literal
   unexpanded string. The server treats any value containing `${` as unset and
   falls back to `~/.claude/plugins/data/otto-ai-plugin/la-credentials.json`.
-- Windows and Linux (via Claude Code) remain untested — report findings from
-  those.
+- **Windows (first install, Aug 2026, MSIX/Store build): the connector fails
+  with CONNECTION_CLOSED until Node's directory is added to the *system*
+  PATH.** Claude Desktop spawns the server on the host (LocalMcpServerManager
+  in `main.log`) but with a sanitized ~8-entry PATH that does not include
+  `C:\Program Files\nodejs` even when Node is installed and `node --version`
+  works in a terminal. Fix: add `C:\Program Files\nodejs` to the **system**
+  PATH, fully exit Claude Desktop (tray icon → Exit), relaunch. After that
+  the connector started and all ten `la_*` tools registered. Suspected
+  Store-build specific (MSIX runs in a container with a sanitized
+  environment); the non-Store installer is untested.
+- **Windows logs live at `%LOCALAPPDATA%\Claude\logs\main.log`** (not
+  `%APPDATA%`); `mcp.log` was empty — the useful spawn detail (the
+  `Using MCP server command: node with path:` line) is in `main.log`. On
+  MSIX builds, paths the app reports under `AppData\Roaming` are virtualized
+  into `AppData\Local\Packages\Claude_*\LocalCache\Roaming`.
+- **The shell-based node/git preflight is unreliable on Windows Cowork:**
+  the session shell is a Linux sandbox with its own Node, so `node --version`
+  there says nothing about the host the server spawns on. Diagnose from
+  `main.log`, not the sandbox shell.
+- Linux (via Claude Code) remains untested — report findings.
 
 ---
 
@@ -171,7 +211,8 @@ will include it in its report whenever it's present.
 | `plugin:build` says `dist/laServer.js is missing` | Run `npm run build` first, or use `npm run plugin:build`, which does both. |
 | Plugin installs but shows no connector | Check `plugins/otto-ai-plugin/server/laServer.mjs` exists. If not, the build didn't finish. |
 | Upload rejected: "path with invalid characters" | The zip contains `node_modules` (or other `@`-prefixed paths) from an old build. Re-run `npm run plugin:build` and re-zip. |
-| `otto-limoanywhere` fails to start | Most likely no `node` on the machine's PATH. |
+| `otto-limoanywhere` fails to start (macOS) | Most likely no `node` on the machine's PATH. |
+| `otto-limoanywhere` fails with CONNECTION_CLOSED (Windows) | Node is missing from the PATH **the desktop host uses to spawn servers** — not the same PATH as your terminal's, so `node --version` succeeding proves nothing. Confirm in `%LOCALAPPDATA%\Claude\logs\main.log`: find the `Using MCP server command: node with path:` line and check whether any Node directory is listed. If not, add `C:\Program Files\nodejs` to the **system** PATH, fully exit Claude Desktop (tray icon → Exit), and relaunch. |
 | LA tools say "isn't connected yet" | Run `/otto-setup` — its `la_connect_start` page verifies and saves the login, live immediately. If it claims success but tools still say this, check the file exists at `~/.claude/plugins/data/otto-ai-plugin/la-credentials.json` — the server's default. (Cowork does not expand `${CLAUDE_PLUGIN_DATA}` in the connector's `MILES_LA_CONFIG`, so the env var is ignored unless it's a real path.) |
 | LA says the login was rejected | Wrong credentials, a changed password, or a user without permission for the quotes and calendar screens. |
 

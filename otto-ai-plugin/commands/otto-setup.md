@@ -30,6 +30,15 @@ Do this:
      `xcode-select --install` in Terminal; on Windows, the installer from
      https://git-scm.com — but continue with setup either way.
    - If both are present, say nothing about the preflight and move on.
+   - **Windows caveat:** on Windows this shell is a Linux sandbox, so the
+     check above reflects the sandbox, not the operator's machine. If the
+     `la_*` tools are missing from this session on Windows even though Node
+     is installed, the usual cause is that the desktop app spawns servers
+     with a minimal *system* PATH that lacks `C:\Program Files\nodejs`. Tell
+     the operator: open `%LOCALAPPDATA%\Claude\logs\main.log`, find the
+     `Using MCP server command: node with path:` line, and if no Node
+     directory is listed, add `C:\Program Files\nodejs` to the **system**
+     PATH, then fully exit Claude Desktop (tray icon → Exit) and relaunch.
 
 1. Recommend the operator create a **dedicated view-only "Otto AI" user** in
    LimoAnywhere rather than sharing their admin login. It limits what this

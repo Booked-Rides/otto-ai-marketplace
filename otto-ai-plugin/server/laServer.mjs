@@ -24883,7 +24883,6 @@ async function startSetupPage() {
     server2.once("error", reject);
     server2.listen(0, "127.0.0.1", () => resolve());
   });
-  server2.unref();
   const timer = setTimeout(closeActivePage, PAGE_TTL_MS);
   timer.unref();
   active = { server: server2, timer };
