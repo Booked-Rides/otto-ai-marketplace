@@ -21,8 +21,10 @@ can use the plugin with or without it.
 
 | Requirement | Notes |
 |---|---|
-| **Node.js 18+** | `node --version`. Needed to build, and the installed plugin currently uses the machine's `node` (Cowork launches the server on the host with the PATH's node). |
+| **Node.js 18+** | `node --version`. Needed to build, and the installed plugin currently uses the machine's `node` (Cowork launches the server on the host with the PATH's node). Without it the `otto-limoanywhere` connector cannot start at all. |
+| **Git** | `git --version`. Cowork installs and updates marketplace plugins via git — without it the marketplace add fails and updates never arrive. macOS: `xcode-select --install`; Windows: git-scm.com. |
 | **Claude Cowork** | Any paid plan (Pro, Max, Team, Enterprise). Cowork is not available on Free. |
+| **Cowork must run LOCALLY** | The bundled LimoAnywhere server cannot run in cloud sessions — skills appear but the `la_*` tools don't. Personal (Pro/Max) accounts: Claude Desktop → Settings → Cowork → turn **off** "Run new tasks in the cloud", then fully restart the app. Team/Enterprise: an org admin sets execution mode under Organization Settings → Cowork. |
 | **Latest Claude Desktop** | Cowork requires it. |
 | **Windows only:** Virtual Machine Platform enabled | Cowork's requirement. |
 | **A LimoAnywhere login** | Company ID, username, password — the three fields from the manage.mylimobiz.com form. **Use a dedicated view-only "Otto AI" user**, not an admin login. |

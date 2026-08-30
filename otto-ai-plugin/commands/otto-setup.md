@@ -11,6 +11,26 @@ Limo Marketer.
 
 Do this:
 
+0. **Preflight — check the machine first.** Run this in the shell:
+
+   ```bash
+   node --version; git --version
+   ```
+
+   - **If `node` is missing**, stop here — the LimoAnywhere connector runs on
+     Node.js and cannot start without it, which is also why the `la_*` tools
+     may be absent from this session. Tell the operator, in plain language, to
+     install Node.js LTS from https://nodejs.org (the standard installer for
+     their system; on a Mac, `brew install node` also works if they use
+     Homebrew), then **fully quit and reopen Claude Desktop** and run
+     `/otto-setup` again. Don't attempt the remaining steps until node is
+     present.
+   - **If `git` is missing**, the plugin can still run, but it won't receive
+     updates from the marketplace. Recommend installing it — on a Mac, running
+     `xcode-select --install` in Terminal; on Windows, the installer from
+     https://git-scm.com — but continue with setup either way.
+   - If both are present, say nothing about the preflight and move on.
+
 1. Recommend the operator create a **dedicated view-only "Otto AI" user** in
    LimoAnywhere rather than sharing their admin login. It limits what this
    connection can reach and it can be revoked on its own. If they'd rather use
