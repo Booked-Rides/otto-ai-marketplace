@@ -111,7 +111,7 @@ var require_package = __commonJS({
 var require_main = __commonJS({
   "node_modules/dotenv/lib/main.js"(exports, module) {
     var fs = __require("fs");
-    var path3 = __require("path");
+    var path4 = __require("path");
     var os = __require("os");
     var crypto = __require("crypto");
     var packageJson = require_package();
@@ -227,7 +227,7 @@ var require_main = __commonJS({
           possibleVaultPath = options.path.endsWith(".vault") ? options.path : `${options.path}.vault`;
         }
       } else {
-        possibleVaultPath = path3.resolve(process.cwd(), ".env.vault");
+        possibleVaultPath = path4.resolve(process.cwd(), ".env.vault");
       }
       if (fs.existsSync(possibleVaultPath)) {
         return possibleVaultPath;
@@ -235,7 +235,7 @@ var require_main = __commonJS({
       return null;
     }
     function _resolveHome(envPath2) {
-      return envPath2[0] === "~" ? path3.join(os.homedir(), envPath2.slice(1)) : envPath2;
+      return envPath2[0] === "~" ? path4.join(os.homedir(), envPath2.slice(1)) : envPath2;
     }
     function _configVault(options) {
       const debug = Boolean(options && options.debug);
@@ -252,7 +252,7 @@ var require_main = __commonJS({
       return { parsed };
     }
     function configDotenv(options) {
-      const dotenvPath = path3.resolve(process.cwd(), ".env");
+      const dotenvPath = path4.resolve(process.cwd(), ".env");
       let encoding = "utf8";
       const debug = Boolean(options && options.debug);
       const quiet = options && "quiet" in options ? options.quiet : true;
@@ -276,13 +276,13 @@ var require_main = __commonJS({
       }
       let lastError;
       const parsedAll = {};
-      for (const path4 of optionPaths) {
+      for (const path5 of optionPaths) {
         try {
-          const parsed = DotenvModule.parse(fs.readFileSync(path4, { encoding }));
+          const parsed = DotenvModule.parse(fs.readFileSync(path5, { encoding }));
           DotenvModule.populate(parsedAll, parsed, options);
         } catch (e) {
           if (debug) {
-            _debug(`Failed to load ${path4} ${e.message}`);
+            _debug(`Failed to load ${path5} ${e.message}`);
           }
           lastError = e;
         }
@@ -297,7 +297,7 @@ var require_main = __commonJS({
         const shortPaths = [];
         for (const filePath of optionPaths) {
           try {
-            const relative = path3.relative(process.cwd(), filePath);
+            const relative = path4.relative(process.cwd(), filePath);
             shortPaths.push(relative);
           } catch (e) {
             if (debug) {
@@ -3593,8 +3593,8 @@ var require_utils = __commonJS({
       }
       return ind;
     }
-    function removeDotSegments(path3) {
-      let input = path3;
+    function removeDotSegments(path4) {
+      let input = path4;
       const output = [];
       let nextSlash = -1;
       let len = 0;
@@ -3846,8 +3846,8 @@ var require_schemes = __commonJS({
         wsComponent.secure = void 0;
       }
       if (wsComponent.resourceName) {
-        const [path3, query] = wsComponent.resourceName.split("?");
-        wsComponent.path = path3 && path3 !== "/" ? path3 : void 0;
+        const [path4, query] = wsComponent.resourceName.split("?");
+        wsComponent.path = path4 && path4 !== "/" ? path4 : void 0;
         wsComponent.query = query;
         wsComponent.resourceName = void 0;
       }
@@ -4017,10 +4017,10 @@ var require_fast_uri = __commonJS({
       schemelessOptions.skipEscape = true;
       return serialize(resolved, schemelessOptions);
     }
-    function resolveComponent(base2, relative, options, skipNormalization) {
+    function resolveComponent(base, relative, options, skipNormalization) {
       const target = {};
       if (!skipNormalization) {
-        base2 = parse4(serialize(base2, options), options);
+        base = parse4(serialize(base, options), options);
         relative = parse4(serialize(relative, options), options);
       }
       options = options || {};
@@ -4040,32 +4040,32 @@ var require_fast_uri = __commonJS({
           target.query = relative.query;
         } else {
           if (!relative.path) {
-            target.path = base2.path;
+            target.path = base.path;
             if (relative.query !== void 0) {
               target.query = relative.query;
             } else {
-              target.query = base2.query;
+              target.query = base.query;
             }
           } else {
             if (relative.path[0] === "/") {
               target.path = removeDotSegments(relative.path);
             } else {
-              if ((base2.userinfo !== void 0 || base2.host !== void 0 || base2.port !== void 0) && !base2.path) {
+              if ((base.userinfo !== void 0 || base.host !== void 0 || base.port !== void 0) && !base.path) {
                 target.path = "/" + relative.path;
-              } else if (!base2.path) {
+              } else if (!base.path) {
                 target.path = relative.path;
               } else {
-                target.path = base2.path.slice(0, base2.path.lastIndexOf("/") + 1) + relative.path;
+                target.path = base.path.slice(0, base.path.lastIndexOf("/") + 1) + relative.path;
               }
               target.path = removeDotSegments(target.path);
             }
             target.query = relative.query;
           }
-          target.userinfo = base2.userinfo;
-          target.host = base2.host;
-          target.port = base2.port;
+          target.userinfo = base.userinfo;
+          target.host = base.host;
+          target.port = base.port;
         }
-        target.scheme = base2.scheme;
+        target.scheme = base.scheme;
       }
       target.fragment = relative.fragment;
       return target;
@@ -7477,10 +7477,10 @@ function assignProp(target, prop, value) {
     configurable: true
   });
 }
-function getElementAtPath(obj, path3) {
-  if (!path3)
+function getElementAtPath(obj, path4) {
+  if (!path4)
     return obj;
-  return path3.reduce((acc, key) => acc?.[key], obj);
+  return path4.reduce((acc, key) => acc?.[key], obj);
 }
 function promiseAllObject(promisesObj) {
   const keys = Object.keys(promisesObj);
@@ -7800,11 +7800,11 @@ function aborted(x, startIndex = 0) {
   }
   return false;
 }
-function prefixIssues(path3, issues) {
+function prefixIssues(path4, issues) {
   return issues.map((iss) => {
     var _a;
     (_a = iss).path ?? (_a.path = []);
-    iss.path.unshift(path3);
+    iss.path.unshift(path4);
     return iss;
   });
 }
@@ -13484,6 +13484,373 @@ function writeCredentialsFile(creds) {
   return file;
 }
 
+// dist/la/setupServer.js
+import { spawn } from "node:child_process";
+import { randomBytes, timingSafeEqual } from "node:crypto";
+import { mkdirSync as mkdirSync2, readFileSync as readFileSync2, writeFileSync as writeFileSync2 } from "node:fs";
+import { createServer } from "node:http";
+import path3 from "node:path";
+
+// dist/la/errors.js
+var LaError = class extends Error {
+  status;
+  body;
+  customFriendly;
+  constructor(status, body, path4, friendly2) {
+    super(`LimoAnywhere error ${status} on ${path4}`);
+    this.status = status;
+    this.body = body;
+    this.customFriendly = friendly2;
+  }
+  /** A short, non-developer explanation of what likely went wrong. */
+  friendly() {
+    if (this.customFriendly)
+      return this.customFriendly;
+    if (this.status === 401 || this.status === 403) {
+      return "LimoAnywhere wouldn't accept the session (it may have been logged out elsewhere). Try again \u2014 a fresh login happens automatically. If it keeps failing, re-check the LimoAnywhere credentials.";
+    }
+    if (this.status === 429) {
+      return "LimoAnywhere is rate limiting us. Wait a minute and try again.";
+    }
+    if (this.status >= 500) {
+      return "LimoAnywhere itself returned a server error \u2014 it may be down or under maintenance (status.limoanywhere.com shows outages). Try again shortly.";
+    }
+    return `LimoAnywhere returned an unexpected error (${this.status}). Details: ${this.body.slice(0, 300)}`;
+  }
+};
+
+// dist/la/session.js
+var LA_BASE = process.env.MILES_LA_BASE_URL?.trim() || "https://manage.mylimobiz.com";
+var sessionCache = /* @__PURE__ */ new Map();
+function cacheKey(creds) {
+  return `${creds.companyId}\0${creds.username}`;
+}
+function cookieHeader(session) {
+  return [...session.cookies.entries()].map(([k, v]) => `${k}=${v}`).join("; ");
+}
+function absorbSetCookies(session, res) {
+  for (const raw of res.headers.getSetCookie()) {
+    const [pair] = raw.split(";");
+    const eq2 = pair.indexOf("=");
+    if (eq2 <= 0)
+      continue;
+    const name = pair.slice(0, eq2).trim();
+    const value = pair.slice(eq2 + 1).trim();
+    if (value === "")
+      session.cookies.delete(name);
+    else
+      session.cookies.set(name, value);
+  }
+}
+function laProblem(cfg) {
+  if (cfg.la)
+    return null;
+  if (cfg.setupHint)
+    return cfg.setupHint;
+  if (cfg.mode === "http") {
+    if (cfg.laVault) {
+      return "LimoAnywhere isn't connected for your account yet. Open the Otto AI page in your Booked Rides portal, link your LimoAnywhere login under the LimoAnywhere card, then try again.";
+    }
+    return "LimoAnywhere isn't connected for your Otto AI login yet \u2014 please contact Limo Marketer support to link it.";
+  }
+  const envPath2 = cfg.envFile?.path ?? ".env";
+  return `LimoAnywhere isn't set up yet. Add LA_COMPANY_ID, LA_USERNAME and LA_PASSWORD to ${envPath2} (the same three things typed into the manage.mylimobiz.com login form), save, then restart Claude Desktop. Run la_check_connection afterwards to confirm.`;
+}
+async function laLogin(creds) {
+  const session = {
+    creds,
+    cookies: /* @__PURE__ */ new Map(),
+    loggedInAtMs: Date.now()
+  };
+  const loginPage = await fetch(`${LA_BASE}/admin/login.asp`, { redirect: "manual" });
+  absorbSetCookies(session, loginPage);
+  const form = new URLSearchParams({
+    companyid: creds.companyId,
+    username: creds.username,
+    password: creds.password,
+    isLASupportUser: "false",
+    dispatchRedirectUrl: "",
+    rememberme: "on"
+  });
+  const res = await fetch(`${LA_BASE}/admin/loginNow.asp`, {
+    method: "POST",
+    redirect: "manual",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      Cookie: cookieHeader(session)
+    },
+    body: form.toString()
+  });
+  absorbSetCookies(session, res);
+  const redirectedTo = res.headers.get("location") ?? "";
+  const failed = /login\.asp/i.test(redirectedTo) || res.status === 200 && /name="Login"/i.test(await res.text().catch(() => ""));
+  if (failed) {
+    throw new LaError(401, "login rejected", "/admin/loginNow.asp", "LimoAnywhere rejected the login. Double-check LA_COMPANY_ID, LA_USERNAME and LA_PASSWORD \u2014 they're the same three fields as the manage.mylimobiz.com login form. If they work in a browser, the password may have just been changed.");
+  }
+  if (res.status >= 400) {
+    throw new LaError(res.status, "login failed", "/admin/loginNow.asp");
+  }
+  sessionCache.set(cacheKey(creds), session);
+  return session;
+}
+async function getSession(creds) {
+  return sessionCache.get(cacheKey(creds)) ?? laLogin(creds);
+}
+function invalidateSession(creds) {
+  sessionCache.delete(cacheKey(creds));
+}
+async function getVerificationToken(session) {
+  if (session.verificationToken)
+    return session.verificationToken;
+  const res = await fetch(`${LA_BASE}/adminnew/ajax/GetVerificationToken`, {
+    headers: { Cookie: cookieHeader(session), Accept: "application/json" }
+  });
+  if (!res.ok) {
+    throw new LaError(res.status, await res.text().catch(() => ""), "/adminnew/ajax/GetVerificationToken");
+  }
+  const token = await res.json();
+  session.verificationToken = token;
+  return token;
+}
+
+// dist/la/setupServer.js
+var PAGE_TTL_MS = 10 * 60 * 1e3;
+var MAX_BODY_BYTES = 16 * 1024;
+var HELPER_START_TIMEOUT_MS = 5e3;
+var SUPERSEDE_POLL_MS = 2e3;
+var SETUP_HELPER_FLAG = "--la-setup-page";
+var SETUP_LAUNCHER_FLAG = "--la-setup-launch";
+var pageUrl = (port, token) => `http://127.0.0.1:${port}/setup?token=${token}`;
+var setupStateFilePath = () => path3.join(path3.dirname(credentialsFilePath()), "la-setup-page.json");
+var active;
+function closeActivePage() {
+  if (!active)
+    return;
+  clearTimeout(active.timer);
+  active.server.close();
+  active.server.closeAllConnections?.();
+  active = void 0;
+}
+var escapeHtml = (s) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c] ?? c);
+var page = (body) => `<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Otto AI \u2014 Connect LimoAnywhere</title>
+<style>
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f5f4f0;
+       display:flex;justify-content:center;padding:48px 16px;color:#1a1a18}
+  .card{background:#fff;border:1px solid #e2e0d8;border-radius:12px;padding:32px;max-width:420px;width:100%}
+  h1{font-size:20px;margin:0 0 6px}
+  p{font-size:14px;line-height:1.5;color:#555}
+  label{display:block;font-size:13px;font-weight:600;margin:16px 0 4px}
+  input{width:100%;box-sizing:border-box;padding:10px;border:1px solid #ccc9bd;border-radius:8px;font-size:15px}
+  button{margin-top:20px;width:100%;padding:11px;border:0;border-radius:8px;background:#1a1a18;color:#fff;
+         font-size:15px;font-weight:600;cursor:pointer}
+  .err{background:#fdecea;border:1px solid #f5c6c0;border-radius:8px;padding:10px 12px;font-size:13px;
+       color:#8a2018;margin-top:16px}
+  .ok{font-size:15px;color:#1c6b30}
+</style></head><body><div class="card">${body}</div></body></html>`;
+var formPage = (token, error2) => page(`<h1>Connect LimoAnywhere</h1>
+<p>Enter the same three things you type at manage.mylimobiz.com. This page is served
+by the Otto AI plugin on this computer \u2014 the login is verified with LimoAnywhere,
+then saved only on this machine. It is not sent to Limo Marketer or into the chat.</p>
+${error2 ? `<div class="err">${escapeHtml(error2)}</div>` : ""}
+<form method="post">
+  <input type="hidden" name="token" value="${token}">
+  <label for="company_id">Company ID</label>
+  <input id="company_id" name="company_id" autocomplete="organization" required>
+  <label for="username">Username</label>
+  <input id="username" name="username" autocomplete="username" required>
+  <label for="password">Password</label>
+  <input id="password" name="password" type="password" autocomplete="current-password" required>
+  <button type="submit">Verify and connect</button>
+</form>`);
+var successPage = () => page(`<h1>Connected \u2713</h1>
+<p class="ok">LimoAnywhere accepted the login and it's saved on this machine.</p>
+<p>You can close this tab and return to Claude \u2014 the connection is live already;
+no restart needed.</p>`);
+var expiredPage = () => page(`<h1>Link expired</h1>
+<p>This setup link has expired or was already used. Go back to Claude and run
+<strong>/otto-setup</strong> again to get a fresh one.</p>`);
+async function readBody(req) {
+  const chunks = [];
+  let size = 0;
+  for await (const chunk of req) {
+    size += chunk.length;
+    if (size > MAX_BODY_BYTES)
+      throw new Error("request body too large");
+    chunks.push(chunk);
+  }
+  return Buffer.concat(chunks).toString("utf8");
+}
+function createSetupHttpServer(token, onSuccess) {
+  const tokenOk = (candidate) => !!candidate && candidate.length === token.length && timingSafeEqual(Buffer.from(candidate), Buffer.from(token));
+  return createServer(async (req, res) => {
+    const send = (status, html, onFlushed) => {
+      res.writeHead(status, {
+        "Content-Type": "text/html; charset=utf-8",
+        "Cache-Control": "no-store",
+        "Referrer-Policy": "no-referrer",
+        "X-Frame-Options": "DENY",
+        "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline'; form-action 'self'"
+      });
+      res.end(html, onFlushed);
+    };
+    try {
+      const url = new URL(req.url ?? "/", "http://127.0.0.1");
+      if (url.pathname !== "/setup")
+        return send(404, expiredPage());
+      if (req.method === "GET") {
+        if (!tokenOk(url.searchParams.get("token")))
+          return send(403, expiredPage());
+        return send(200, formPage(token));
+      }
+      if (req.method === "POST") {
+        const form = new URLSearchParams(await readBody(req));
+        if (!tokenOk(form.get("token")))
+          return send(403, expiredPage());
+        const companyId = (form.get("company_id") ?? "").trim();
+        const username = (form.get("username") ?? "").trim();
+        const password = form.get("password") ?? "";
+        if (!companyId || !username || !password) {
+          return send(400, formPage(token, "All three fields are required."));
+        }
+        const creds = { companyId, username, password };
+        try {
+          invalidateSession(creds);
+          await laLogin(creds);
+        } catch (err) {
+          const reason = err instanceof LaError && err.status === 401 ? "LimoAnywhere rejected that login \u2014 double-check the company ID, username, and password." : "Couldn't verify the login with LimoAnywhere just now \u2014 please try again.";
+          return send(401, formPage(token, reason));
+        }
+        writeCredentialsFile(creds);
+        return send(200, successPage(), () => setImmediate(onSuccess));
+      }
+      res.writeHead(405, { Allow: "GET, POST" });
+      res.end();
+    } catch {
+      send(500, page("<h1>Something went wrong</h1><p>Return to Claude and try again.</p>"));
+    }
+  });
+}
+var listenLoopback = (server) => new Promise((resolve, reject) => {
+  server.once("error", reject);
+  server.listen(0, "127.0.0.1", () => resolve());
+});
+async function runSetupHelper() {
+  const token = process.env.MILES_LA_SETUP_TOKEN ?? "";
+  const stateFile = process.env.MILES_LA_SETUP_STATE ?? "";
+  const generation = process.env.MILES_LA_SETUP_GENERATION ?? "";
+  if (!token)
+    process.exit(1);
+  process.stdout.on("error", () => {
+  });
+  const server = createSetupHttpServer(token, () => {
+    server.close();
+    server.closeAllConnections?.();
+    process.exit(0);
+  });
+  await listenLoopback(server);
+  const { port } = server.address();
+  process.stdout.write(`PORT ${port}
+`);
+  setTimeout(() => process.exit(0), PAGE_TTL_MS).unref();
+  if (stateFile && generation) {
+    setInterval(() => {
+      try {
+        const raw = JSON.parse(readFileSync2(stateFile, "utf8"));
+        if (raw.generation !== generation)
+          process.exit(0);
+      } catch {
+      }
+    }, SUPERSEDE_POLL_MS).unref();
+  }
+}
+function runSetupLauncher() {
+  const entry = process.argv[1] ?? "";
+  const child = spawn(process.execPath, [entry, SETUP_HELPER_FLAG], {
+    detached: true,
+    stdio: ["ignore", "inherit", "ignore"],
+    windowsHide: true
+  });
+  child.unref();
+  process.exit(0);
+}
+async function startHelperPage(token) {
+  const entry = process.argv[1] ?? "";
+  if (!/\.[mc]?js$/i.test(entry))
+    throw new Error("entry script is not plain JS");
+  const generation = randomBytes(9).toString("base64url");
+  const stateFile = setupStateFilePath();
+  try {
+    mkdirSync2(path3.dirname(stateFile), { recursive: true });
+    writeFileSync2(stateFile, `${JSON.stringify({ generation, startedAt: (/* @__PURE__ */ new Date()).toISOString() })}
+`);
+  } catch {
+  }
+  const child = spawn(process.execPath, [entry, SETUP_LAUNCHER_FLAG], {
+    detached: true,
+    stdio: ["ignore", "pipe", "ignore"],
+    windowsHide: true,
+    env: {
+      ...process.env,
+      MILES_LA_SETUP_TOKEN: token,
+      MILES_LA_SETUP_STATE: stateFile,
+      MILES_LA_SETUP_GENERATION: generation
+    }
+  });
+  if (!child.stdout) {
+    try {
+      child.kill();
+    } catch {
+    }
+    throw new Error("launcher stdout unavailable");
+  }
+  const stdout = child.stdout;
+  const port = await new Promise((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error("setup helper did not report a port in time")), HELPER_START_TIMEOUT_MS);
+    let out = "";
+    stdout.setEncoding("utf8");
+    stdout.on("data", (chunk) => {
+      out += chunk;
+      const m = /^PORT (\d+)$/m.exec(out);
+      if (m) {
+        clearTimeout(timer);
+        resolve(Number(m[1]));
+      }
+    });
+    stdout.once("end", () => {
+      clearTimeout(timer);
+      reject(new Error("setup helper closed its pipe before reporting a port"));
+    });
+    child.once("error", (err) => {
+      clearTimeout(timer);
+      reject(err);
+    });
+  }).finally(() => {
+    stdout.destroy();
+    child.unref();
+  });
+  return { url: pageUrl(port, token), expiresMinutes: PAGE_TTL_MS / 6e4 };
+}
+async function startInProcessPage(token) {
+  const server = createSetupHttpServer(token, () => setImmediate(closeActivePage));
+  await listenLoopback(server);
+  const timer = setTimeout(closeActivePage, PAGE_TTL_MS);
+  timer.unref();
+  active = { server, timer };
+  const { port } = server.address();
+  return { url: pageUrl(port, token), expiresMinutes: PAGE_TTL_MS / 6e4 };
+}
+async function startSetupPage() {
+  closeActivePage();
+  const token = randomBytes(24).toString("base64url");
+  try {
+    return await startHelperPage(token);
+  } catch {
+    return startInProcessPage(token);
+  }
+}
+
 // node_modules/zod/v3/external.js
 var external_exports = {};
 __export(external_exports, {
@@ -13962,8 +14329,8 @@ function getErrorMap() {
 
 // node_modules/zod/v3/helpers/parseUtil.js
 var makeIssue = (params) => {
-  const { data, path: path3, errorMaps, issueData } = params;
-  const fullPath = [...path3, ...issueData.path || []];
+  const { data, path: path4, errorMaps, issueData } = params;
+  const fullPath = [...path4, ...issueData.path || []];
   const fullIssue = {
     ...issueData,
     path: fullPath
@@ -14079,11 +14446,11 @@ var errorUtil;
 
 // node_modules/zod/v3/types.js
 var ParseInputLazyPath = class {
-  constructor(parent, value, path3, key) {
+  constructor(parent, value, path4, key) {
     this._cachedPath = [];
     this.parent = parent;
     this.data = value;
-    this._path = path3;
+    this._path = path4;
     this._key = key;
   }
   get path() {
@@ -17133,23 +17500,23 @@ var ZodEffects = class extends ZodType2 {
     }
     if (effect.type === "transform") {
       if (ctx.common.async === false) {
-        const base2 = this._def.schema._parseSync({
+        const base = this._def.schema._parseSync({
           data: ctx.data,
           path: ctx.path,
           parent: ctx
         });
-        if (!isValid(base2))
+        if (!isValid(base))
           return INVALID;
-        const result = effect.transform(base2.value, checkCtx);
+        const result = effect.transform(base.value, checkCtx);
         if (result instanceof Promise) {
           throw new Error(`Asynchronous transform encountered during synchronous parse operation. Use .parseAsync instead.`);
         }
         return { status: status.value, value: result };
       } else {
-        return this._def.schema._parseAsync({ data: ctx.data, path: ctx.path, parent: ctx }).then((base2) => {
-          if (!isValid(base2))
+        return this._def.schema._parseAsync({ data: ctx.data, path: ctx.path, parent: ctx }).then((base) => {
+          if (!isValid(base))
             return INVALID;
-          return Promise.resolve(effect.transform(base2.value, checkCtx)).then((result) => ({
+          return Promise.resolve(effect.transform(base.value, checkCtx)).then((result) => ({
             status: status.value,
             value: result
           }));
@@ -17655,11 +18022,11 @@ function normalizeObjectSchema(schema) {
   }
   return void 0;
 }
-function getDotPath(path3) {
-  if (path3.length === 0) {
+function getDotPath(path4) {
+  if (path4.length === 0) {
     return "object root";
   }
-  return path3.reduce((acc, seg, index) => {
+  return path4.reduce((acc, seg, index) => {
     if (index === 0) {
       return String(seg);
     }
@@ -18583,19 +18950,19 @@ function parseNullableDef(def, refs) {
     };
   }
   if (refs.target === "openApi3") {
-    const base3 = parseDef(def.innerType._def, {
+    const base2 = parseDef(def.innerType._def, {
       ...refs,
       currentPath: [...refs.currentPath]
     });
-    if (base3 && "$ref" in base3)
-      return { allOf: [base3], nullable: true };
-    return base3 && { ...base3, nullable: true };
+    if (base2 && "$ref" in base2)
+      return { allOf: [base2], nullable: true };
+    return base2 && { ...base2, nullable: true };
   }
-  const base2 = parseDef(def.innerType._def, {
+  const base = parseDef(def.innerType._def, {
     ...refs,
     currentPath: [...refs.currentPath, "anyOf", "0"]
   });
-  return base2 && { anyOf: [base2, { type: "null" }] };
+  return base && { anyOf: [base, { type: "null" }] };
 }
 
 // node_modules/zod-to-json-schema/dist/esm/parsers/number.js
@@ -19999,8 +20366,8 @@ var Protocol = class {
 function isPlainObject2(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
-function mergeCapabilities(base2, additional) {
-  const result = { ...base2 };
+function mergeCapabilities(base, additional) {
+  const result = { ...base };
   for (const key in additional) {
     const k = key;
     const addValue = additional[k];
@@ -21761,45 +22128,45 @@ function clearTokenCache(locationId) {
   else
     cache.clear();
 }
-function vaultUnreachableMessage(cfg2) {
-  return cfg2.mode === "stdio" ? "Couldn't reach the local token vault. Is the local Supabase running? (npx supabase start in the limo-platform folder)" : "The connection to GoHighLevel is temporarily unavailable \u2014 please try again in a minute.";
+function vaultUnreachableMessage(cfg) {
+  return cfg.mode === "stdio" ? "Couldn't reach the local token vault. Is the local Supabase running? (npx supabase start in the limo-platform folder)" : "The connection to GoHighLevel is temporarily unavailable \u2014 please try again in a minute.";
 }
-function tokenMissingMessage(cfg2) {
-  return cfg2.mode === "stdio" ? `No marketplace token for location ${cfg2.locationId} in the local vault. Re-run the token seed script to refresh it.` : "Your GoHighLevel connection isn't active yet \u2014 please contact Limo Marketer support.";
+function tokenMissingMessage(cfg) {
+  return cfg.mode === "stdio" ? `No marketplace token for location ${cfg.locationId} in the local vault. Re-run the token seed script to refresh it.` : "Your GoHighLevel connection isn't active yet \u2014 please contact Limo Marketer support.";
 }
-function tokenExpiredMessage(cfg2) {
-  return cfg2.mode === "stdio" ? "The local marketplace token for this location has expired (they last ~24 hours). Re-run the token seed script to refresh it." : "The connection to GoHighLevel is being refreshed \u2014 please try again in a minute.";
+function tokenExpiredMessage(cfg) {
+  return cfg.mode === "stdio" ? "The local marketplace token for this location has expired (they last ~24 hours). Re-run the token seed script to refresh it." : "The connection to GoHighLevel is being refreshed \u2014 please try again in a minute.";
 }
-async function resolveGhlToken(cfg2) {
-  if (cfg2.marketplace && cfg2.vault && cfg2.locationId) {
-    const cached3 = cache.get(cfg2.locationId);
+async function resolveGhlToken(cfg) {
+  if (cfg.marketplace && cfg.vault && cfg.locationId) {
+    const cached3 = cache.get(cfg.locationId);
     if (cached3 && cached3.expiresAtMs - Date.now() > 2 * 60 * 1e3) {
       return { source: "miles-vault", token: cached3.token, expiresAtMs: cached3.expiresAtMs };
     }
-    const { token, expiresAtMs: expiresAtMs2 } = await resolveMarketplaceToken({ url: cfg2.vault.url, serviceKey: cfg2.vault.key }, cfg2.apiBase, cfg2.marketplace, cfg2.locationId);
-    storeInCache(cfg2.locationId, token, expiresAtMs2);
+    const { token, expiresAtMs: expiresAtMs2 } = await resolveMarketplaceToken({ url: cfg.vault.url, serviceKey: cfg.vault.key }, cfg.apiBase, cfg.marketplace, cfg.locationId);
+    storeInCache(cfg.locationId, token, expiresAtMs2);
     return { source: "miles-vault", token, expiresAtMs: expiresAtMs2 };
   }
-  if (cfg2.ghlPit)
-    return { source: "pit", token: cfg2.ghlPit };
-  if (!cfg2.vault) {
+  if (cfg.ghlPit)
+    return { source: "pit", token: cfg.ghlPit };
+  if (!cfg.vault) {
     throw new Error("No GoHighLevel credential configured. Set GHL_PRIVATE_INTEGRATION_TOKEN, or MILES_TOKEN_DB_URL + MILES_TOKEN_DB_KEY for the local token vault.");
   }
-  if (!cfg2.locationId) {
+  if (!cfg.locationId) {
     throw new Error("A GoHighLevel location is required to use the token vault.");
   }
-  const cached2 = cache.get(cfg2.locationId);
+  const cached2 = cache.get(cfg.locationId);
   if (cached2 && cached2.expiresAtMs - Date.now() > 2 * 60 * 1e3) {
     return { source: "local-vault", token: cached2.token, expiresAtMs: cached2.expiresAtMs };
   }
-  const url = `${cfg2.vault.url}/rest/v1/ghl_oauth_tokens?resource_id=eq.${encodeURIComponent(cfg2.locationId)}&resource_type=eq.location&select=access_token,expires_at&limit=1`;
+  const url = `${cfg.vault.url}/rest/v1/ghl_oauth_tokens?resource_id=eq.${encodeURIComponent(cfg.locationId)}&resource_type=eq.location&select=access_token,expires_at&limit=1`;
   let res;
   try {
     res = await fetch(url, {
-      headers: { apikey: cfg2.vault.key, Authorization: `Bearer ${cfg2.vault.key}` }
+      headers: { apikey: cfg.vault.key, Authorization: `Bearer ${cfg.vault.key}` }
     });
   } catch {
-    throw new Error(vaultUnreachableMessage(cfg2));
+    throw new Error(vaultUnreachableMessage(cfg));
   }
   if (!res.ok) {
     throw new Error(`Token vault query failed (HTTP ${res.status}).`);
@@ -21807,13 +22174,13 @@ async function resolveGhlToken(cfg2) {
   const rows = await res.json();
   const row = rows[0];
   if (!row) {
-    throw new Error(tokenMissingMessage(cfg2));
+    throw new Error(tokenMissingMessage(cfg));
   }
   const expiresAtMs = new Date(row.expires_at).getTime();
   if (expiresAtMs - Date.now() < 60 * 1e3) {
-    throw new Error(tokenExpiredMessage(cfg2));
+    throw new Error(tokenExpiredMessage(cfg));
   }
-  storeInCache(cfg2.locationId, row.access_token, expiresAtMs);
+  storeInCache(cfg.locationId, row.access_token, expiresAtMs);
   return { source: "local-vault", token: row.access_token, expiresAtMs };
 }
 function storeInCache(locationId, token, expiresAtMs) {
@@ -21830,8 +22197,8 @@ var GHL_API_VERSION = "2021-07-28";
 var GhlError = class extends Error {
   status;
   body;
-  constructor(status, body, path3) {
-    super(`GoHighLevel API error ${status} on ${path3}`);
+  constructor(status, body, path4) {
+    super(`GoHighLevel API error ${status} on ${path4}`);
     this.status = status;
     this.body = body;
   }
@@ -21852,14 +22219,14 @@ var GhlError = class extends Error {
     return `GoHighLevel returned an unexpected error (${this.status}). Details: ${this.body.slice(0, 300)}`;
   }
 };
-async function ghlFetch(cfg2, apiPath, opts = {}) {
-  const url = new URL(apiPath, cfg2.apiBase);
+async function ghlFetch(cfg, apiPath, opts = {}) {
+  const url = new URL(apiPath, cfg.apiBase);
   for (const [k, v] of Object.entries(opts.query ?? {})) {
     if (v !== void 0)
       url.searchParams.set(k, String(v));
   }
   const doFetch = async () => {
-    const { token } = await resolveGhlToken(cfg2);
+    const { token } = await resolveGhlToken(cfg);
     return fetch(url, {
       method: opts.method ?? "GET",
       headers: {
@@ -21877,8 +22244,8 @@ async function ghlFetch(cfg2, apiPath, opts = {}) {
     await new Promise((r) => setTimeout(r, Math.min(wait, 30) * 1e3));
     res = await doFetch();
   }
-  if (res.status === 401 && !cfg2.ghlPit) {
-    clearTokenCache(cfg2.locationId);
+  if (res.status === 401 && !cfg.ghlPit) {
+    clearTokenCache(cfg.locationId);
     res = await doFetch();
   }
   if (!res.ok) {
@@ -21919,47 +22286,47 @@ async function pooled(items, limit, fn) {
 
 // dist/ghl/writes.js
 var WRITE_VERSION = "2021-04-15";
-async function sendSms(cfg2, p) {
-  return ghlFetch(cfg2, "/conversations/messages", {
+async function sendSms(cfg, p) {
+  return ghlFetch(cfg, "/conversations/messages", {
     method: "POST",
     body: { type: "SMS", contactId: p.contactId, message: p.message }
   });
 }
-async function sendEmail(cfg2, p) {
-  return ghlFetch(cfg2, "/conversations/messages", {
+async function sendEmail(cfg, p) {
+  return ghlFetch(cfg, "/conversations/messages", {
     method: "POST",
     body: { type: "Email", contactId: p.contactId, subject: p.subject, html: p.html }
   });
 }
-async function updateTags(cfg2, p) {
+async function updateTags(cfg, p) {
   if (p.add.length > 0) {
-    await ghlFetch(cfg2, `/contacts/${p.contactId}/tags`, {
+    await ghlFetch(cfg, `/contacts/${p.contactId}/tags`, {
       method: "POST",
       body: { tags: p.add },
       version: WRITE_VERSION
     });
   }
   if (p.remove.length > 0) {
-    await ghlFetch(cfg2, `/contacts/${p.contactId}/tags`, {
+    await ghlFetch(cfg, `/contacts/${p.contactId}/tags`, {
       method: "DELETE",
       body: { tags: p.remove },
       version: WRITE_VERSION
     });
   }
 }
-async function addNote(cfg2, p) {
-  await ghlFetch(cfg2, `/contacts/${p.contactId}/notes`, {
+async function addNote(cfg, p) {
+  await ghlFetch(cfg, `/contacts/${p.contactId}/notes`, {
     method: "POST",
     body: { body: p.body },
     version: WRITE_VERSION
   });
 }
-async function createOpportunity(cfg2, p) {
-  const data = await ghlFetch(cfg2, "/opportunities/", {
+async function createOpportunity(cfg, p) {
+  const data = await ghlFetch(cfg, "/opportunities/", {
     method: "POST",
     body: {
       pipelineId: p.pipelineId,
-      locationId: cfg2.locationId,
+      locationId: cfg.locationId,
       pipelineStageId: p.pipelineStageId,
       contactId: p.contactId,
       name: p.name,
@@ -21970,13 +22337,13 @@ async function createOpportunity(cfg2, p) {
   });
   return { opportunityId: data?.opportunity?.id ?? data?.id };
 }
-async function updateOpportunity(cfg2, p) {
+async function updateOpportunity(cfg, p) {
   const body = {};
   if (p.pipelineStageId)
     body.pipelineStageId = p.pipelineStageId;
   if (p.status)
     body.status = p.status;
-  await ghlFetch(cfg2, `/opportunities/${p.opportunityId}`, {
+  await ghlFetch(cfg, `/opportunities/${p.opportunityId}`, {
     method: "PUT",
     body,
     version: WRITE_VERSION
@@ -21997,16 +22364,16 @@ function friendly400(actionType, err) {
       return `GoHighLevel rejected the change. GHL said: ${detail}`;
   }
 }
-async function executePendingAction(cfg2, row) {
+async function executePendingAction(cfg, row) {
   const p = row.payload;
   try {
     switch (row.action_type) {
       case "send_sms": {
-        const result = await sendSms(cfg2, { contactId: p.contactId, message: p.message });
+        const result = await sendSms(cfg, { contactId: p.contactId, message: p.message });
         return { summary: `SMS sent to ${p.contactName ?? p.contactId}.`, result: { ...result } };
       }
       case "send_email": {
-        const result = await sendEmail(cfg2, {
+        const result = await sendEmail(cfg, {
           contactId: p.contactId,
           subject: p.subject,
           html: p.html
@@ -22014,7 +22381,7 @@ async function executePendingAction(cfg2, row) {
         return { summary: `Email sent to ${p.contactName ?? p.contactId}.`, result: { ...result } };
       }
       case "update_tags": {
-        await updateTags(cfg2, { contactId: p.contactId, add: p.add ?? [], remove: p.remove ?? [] });
+        await updateTags(cfg, { contactId: p.contactId, add: p.add ?? [], remove: p.remove ?? [] });
         const parts = [
           (p.add ?? []).length > 0 ? `added ${p.add.join(", ")}` : "",
           (p.remove ?? []).length > 0 ? `removed ${p.remove.join(", ")}` : ""
@@ -22025,11 +22392,11 @@ async function executePendingAction(cfg2, row) {
         };
       }
       case "add_note": {
-        await addNote(cfg2, { contactId: p.contactId, body: p.note });
+        await addNote(cfg, { contactId: p.contactId, body: p.note });
         return { summary: `Note added to ${p.contactName ?? p.contactId}.`, result: { ok: true } };
       }
       case "move_opportunity": {
-        await updateOpportunity(cfg2, {
+        await updateOpportunity(cfg, {
           opportunityId: p.opportunityId,
           pipelineStageId: p.pipelineStageId,
           status: p.status
@@ -22041,7 +22408,7 @@ async function executePendingAction(cfg2, row) {
         };
       }
       case "create_opportunity": {
-        const result = await createOpportunity(cfg2, {
+        const result = await createOpportunity(cfg, {
           contactId: p.contactId,
           name: p.name,
           pipelineId: p.pipelineId,
@@ -22106,13 +22473,13 @@ async function redeemPendingAction(gate, code) {
   }
   return { row };
 }
-async function confirmPendingAction(gate, cfg2, code) {
+async function confirmPendingAction(gate, cfg, code) {
   const redeemed = await redeemPendingAction(gate, code);
   if ("error" in redeemed)
     return redeemed.error;
   const row = redeemed.row;
   try {
-    const outcome = await executePendingAction(cfg2, row);
+    const outcome = await executePendingAction(cfg, row);
     await gate.store.finish(row.code_hash, {
       executed_at: (/* @__PURE__ */ new Date()).toISOString(),
       result: outcome.result
@@ -22247,13 +22614,13 @@ var confirmActionTool = {
     code: external_exports.string().describe("The MILES- confirmation code from the prepare step.")
   },
   logArgs: () => ({}),
-  handler: async ({ cfg: cfg2, gate }, args) => {
+  handler: async ({ cfg, gate }, args) => {
     if (!gate)
       return NO_WRITES_MESSAGE;
     const code = String(args.code ?? "").trim();
     if (!code)
       return "Give me the MILES- confirmation code from the prepare step.";
-    return confirmPendingAction(gate, cfg2, code);
+    return confirmPendingAction(gate, cfg, code);
   }
 };
 var cancelActionTool = {
@@ -22277,21 +22644,21 @@ var cancelActionTool = {
 };
 
 // dist/ghl/api.js
-async function getLocation(cfg2) {
-  const data = await ghlFetch(cfg2, `/locations/${cfg2.locationId}`);
+async function getLocation(cfg) {
+  const data = await ghlFetch(cfg, `/locations/${cfg.locationId}`);
   const loc = data.location ?? data;
-  return { id: loc.id ?? cfg2.locationId, name: loc.name };
+  return { id: loc.id ?? cfg.locationId, name: loc.name };
 }
-async function getContactsAddedBetween(cfg2, start, end, maxContacts = 500) {
+async function getContactsAddedBetween(cfg, start, end, maxContacts = 500) {
   try {
     const collected = [];
     let total;
     let page2 = 1;
     while (collected.length < maxContacts && page2 <= 10) {
-      const data = await ghlFetch(cfg2, "/contacts/search", {
+      const data = await ghlFetch(cfg, "/contacts/search", {
         method: "POST",
         body: {
-          locationId: cfg2.locationId,
+          locationId: cfg.locationId,
           page: page2,
           pageLimit: 100,
           filters: [
@@ -22318,9 +22685,9 @@ async function getContactsAddedBetween(cfg2, start, end, maxContacts = 500) {
     let startAfterId;
     let startAfter;
     for (let pageNum = 0; pageNum < 10; pageNum++) {
-      const data = await ghlFetch(cfg2, "/contacts/", {
+      const data = await ghlFetch(cfg, "/contacts/", {
         query: {
-          locationId: cfg2.locationId,
+          locationId: cfg.locationId,
           limit: 100,
           startAfterId,
           startAfter
@@ -22348,14 +22715,14 @@ async function getContactsAddedBetween(cfg2, start, end, maxContacts = 500) {
     return { contacts: collected.slice(0, maxContacts) };
   }
 }
-async function getConversationsForContact(cfg2, contactId) {
-  const data = await ghlFetch(cfg2, "/conversations/search", {
-    query: { locationId: cfg2.locationId, contactId, limit: 20 }
+async function getConversationsForContact(cfg, contactId) {
+  const data = await ghlFetch(cfg, "/conversations/search", {
+    query: { locationId: cfg.locationId, contactId, limit: 20 }
   });
   return data.conversations ?? [];
 }
-async function getMessages(cfg2, conversationId) {
-  const data = await ghlFetch(cfg2, `/conversations/${conversationId}/messages`, {
+async function getMessages(cfg, conversationId) {
+  const data = await ghlFetch(cfg, `/conversations/${conversationId}/messages`, {
     query: { limit: 100 }
   });
   const inner = data.messages;
@@ -22365,8 +22732,8 @@ async function getMessages(cfg2, conversationId) {
     return inner.messages;
   return [];
 }
-async function listUsersDetailed(cfg2) {
-  const data = await ghlFetch(cfg2, "/users/", { query: { locationId: cfg2.locationId } });
+async function listUsersDetailed(cfg) {
+  const data = await ghlFetch(cfg, "/users/", { query: { locationId: cfg.locationId } });
   return (data.users ?? []).filter((u) => u.id).map((u) => ({
     id: u.id,
     name: [u.firstName, u.lastName].filter(Boolean).join(" ") || u.name || u.email || u.id,
@@ -22375,21 +22742,21 @@ async function listUsersDetailed(cfg2) {
     roles: u.roles
   }));
 }
-async function listUsers(cfg2) {
+async function listUsers(cfg) {
   const map = /* @__PURE__ */ new Map();
   try {
-    for (const u of await listUsersDetailed(cfg2))
+    for (const u of await listUsersDetailed(cfg))
       map.set(u.id, u.name);
   } catch {
   }
   return map;
 }
-async function getOpportunities(cfg2, maxPages = 5) {
+async function getOpportunities(cfg, maxPages = 5) {
   const collected = [];
   let page2 = 1;
   while (page2 <= maxPages) {
-    const data = await ghlFetch(cfg2, "/opportunities/search", {
-      query: { location_id: cfg2.locationId, limit: 100, page: page2 }
+    const data = await ghlFetch(cfg, "/opportunities/search", {
+      query: { location_id: cfg.locationId, limit: 100, page: page2 }
     });
     const batch = data.opportunities ?? [];
     collected.push(...batch);
@@ -22399,21 +22766,21 @@ async function getOpportunities(cfg2, maxPages = 5) {
   }
   return collected;
 }
-async function getCalendars(cfg2) {
-  const data = await ghlFetch(cfg2, "/calendars/", {
-    query: { locationId: cfg2.locationId },
+async function getCalendars(cfg) {
+  const data = await ghlFetch(cfg, "/calendars/", {
+    query: { locationId: cfg.locationId },
     version: "2021-04-15"
   });
   return data.calendars ?? [];
 }
-async function getCalendarEvents(cfg2, start, end) {
-  const calendars = (await getCalendars(cfg2)).filter((c) => c.isActive !== false).slice(0, 10);
+async function getCalendarEvents(cfg, start, end) {
+  const calendars = (await getCalendars(cfg)).filter((c) => c.isActive !== false).slice(0, 10);
   if (calendars.length === 0)
     return [];
   const perCalendar = await pooled(calendars, 3, async (cal) => {
-    const data = await ghlFetch(cfg2, "/calendars/events", {
+    const data = await ghlFetch(cfg, "/calendars/events", {
       query: {
-        locationId: cfg2.locationId,
+        locationId: cfg.locationId,
         calendarId: cal.id,
         startTime: start.getTime(),
         endTime: end.getTime()
@@ -22438,26 +22805,26 @@ async function probe(name, fn, optional2 = false) {
     return { name, ok: false, detail, optional: optional2 };
   }
 }
-async function checkConnection(cfg2) {
+async function checkConnection(cfg) {
   const checks = [];
-  if (cfg2.mode === "stdio" && cfg2.envFile) {
+  if (cfg.mode === "stdio" && cfg.envFile) {
     checks.push({
       name: "Settings file (.env)",
-      ok: cfg2.envFile.exists,
-      detail: cfg2.envFile.exists ? `Found at ${cfg2.envFile.path}` : `Not found. Expected at ${cfg2.envFile.path} \u2014 copy .env.example to .env and fill it in.`
+      ok: cfg.envFile.exists,
+      detail: cfg.envFile.exists ? `Found at ${cfg.envFile.path}` : `Not found. Expected at ${cfg.envFile.path} \u2014 copy .env.example to .env and fill it in.`
     });
   }
   checks.push({
     name: "Location ID",
-    ok: !!cfg2.locationId,
-    detail: cfg2.locationId ? `Set to ${cfg2.locationId} \u2014 all tools are locked to this one location.` : cfg2.mode === "stdio" ? "GHL_LOCATION_ID is empty in the .env file. Find it in GHL under Settings -> Business Profile." : "No GoHighLevel location is linked to your account yet \u2014 contact Limo Marketer support."
+    ok: !!cfg.locationId,
+    detail: cfg.locationId ? `Set to ${cfg.locationId} \u2014 all tools are locked to this one location.` : cfg.mode === "stdio" ? "GHL_LOCATION_ID is empty in the .env file. Find it in GHL under Settings -> Business Profile." : "No GoHighLevel location is linked to your account yet \u2014 contact Limo Marketer support."
   });
   let credentialOk = false;
   try {
-    const info = await resolveGhlToken(cfg2);
+    const info = await resolveGhlToken(cfg);
     credentialOk = true;
     const minutesLeft = info.expiresAtMs ? Math.max(0, Math.round((info.expiresAtMs - Date.now()) / 6e4)) : void 0;
-    const detail = info.source === "pit" ? "Using a Private Integration Token from the .env file." : cfg2.mode === "stdio" ? `Using this location's marketplace app token from the local vault${minutesLeft !== void 0 ? ` (valid for about ${minutesLeft} more minutes; re-run the seed script when it expires)` : ""}.` : `Using this location's GoHighLevel connection${minutesLeft !== void 0 ? ` (valid for about ${minutesLeft} more minutes; it renews automatically)` : ""}.`;
+    const detail = info.source === "pit" ? "Using a Private Integration Token from the .env file." : cfg.mode === "stdio" ? `Using this location's marketplace app token from the local vault${minutesLeft !== void 0 ? ` (valid for about ${minutesLeft} more minutes; re-run the seed script when it expires)` : ""}.` : `Using this location's GoHighLevel connection${minutesLeft !== void 0 ? ` (valid for about ${minutesLeft} more minutes; it renews automatically)` : ""}.`;
     checks.push({ name: "GoHighLevel credential", ok: true, detail });
   } catch (err) {
     checks.push({
@@ -22466,39 +22833,39 @@ async function checkConnection(cfg2) {
       detail: err.message
     });
   }
-  if (credentialOk && cfg2.locationId) {
+  if (credentialOk && cfg.locationId) {
     checks.push(await probe("Connect to GoHighLevel", async () => {
-      const loc = await getLocation(cfg2);
+      const loc = await getLocation(cfg);
       return loc.name ? `Connected. This token reaches the location "${loc.name}".` : "Connected to the location.";
     }));
     checks.push(await probe("Read contacts", async () => {
-      const data = await ghlFetch(cfg2, "/contacts/", {
-        query: { locationId: cfg2.locationId, limit: 1 }
+      const data = await ghlFetch(cfg, "/contacts/", {
+        query: { locationId: cfg.locationId, limit: 1 }
       });
       const total = data.meta?.total;
       return total !== void 0 ? `Working. This location has about ${total} contacts.` : "Working.";
     }));
     checks.push(await probe("Read conversations & messages", async () => {
-      await ghlFetch(cfg2, "/conversations/search", {
-        query: { locationId: cfg2.locationId, limit: 1 }
+      await ghlFetch(cfg, "/conversations/search", {
+        query: { locationId: cfg.locationId, limit: 1 }
       });
       return "Working.";
     }));
     checks.push(await probe("Read opportunities (pipeline)", async () => {
-      await ghlFetch(cfg2, "/opportunities/search", {
-        query: { location_id: cfg2.locationId, limit: 1 }
+      await ghlFetch(cfg, "/opportunities/search", {
+        query: { location_id: cfg.locationId, limit: 1 }
       });
       return "Working.";
     }));
     checks.push(await probe("Read calendar appointments", async () => {
       const now = /* @__PURE__ */ new Date();
       const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1e3);
-      const events = await getCalendarEvents(cfg2, weekAgo, now);
+      const events = await getCalendarEvents(cfg, weekAgo, now);
       return `Working. ${events.length} appointment(s) found in the last 7 days.`;
     }, true));
     checks.push(await probe("Read team members", async () => {
-      const data = await ghlFetch(cfg2, "/users/", {
-        query: { locationId: cfg2.locationId }
+      const data = await ghlFetch(cfg, "/users/", {
+        query: { locationId: cfg.locationId }
       });
       return `Working. ${data.users?.length ?? 0} team members found.`;
     }, true));
@@ -22528,19 +22895,19 @@ var checkConnectionTool = {
   description: "Health check for the Otto AI setup. Verifies the settings, the GoHighLevel token, and that each kind of data (contacts, conversations, opportunities, calendar, users) can be read. Use this whenever setup status is in question or another tool reports a problem.",
   kind: "read",
   inputSchema: {},
-  handler: ({ cfg: cfg2 }) => checkConnection(cfg2)
+  handler: ({ cfg }) => checkConnection(cfg)
 };
 
 // dist/ghl/apiCrm.js
-async function getContact(cfg2, contactId) {
-  const data = await ghlFetch(cfg2, `/contacts/${contactId}`);
+async function getContact(cfg, contactId) {
+  const data = await ghlFetch(cfg, `/contacts/${contactId}`);
   return data.contact ?? data;
 }
-async function searchContacts(cfg2, query, limit = 5) {
-  const data = await ghlFetch(cfg2, "/contacts/search", {
+async function searchContacts(cfg, query, limit = 5) {
+  const data = await ghlFetch(cfg, "/contacts/search", {
     method: "POST",
     body: {
-      locationId: cfg2.locationId,
+      locationId: cfg.locationId,
       query,
       page: 1,
       pageLimit: Math.min(Math.max(limit, 1), 20)
@@ -22550,14 +22917,14 @@ async function searchContacts(cfg2, query, limit = 5) {
 }
 var FIELD_DEFS_TTL_MS = 60 * 60 * 1e3;
 var fieldDefsCache = /* @__PURE__ */ new Map();
-async function getCustomFieldNames(cfg2) {
-  const key = cfg2.locationId ?? "";
+async function getCustomFieldNames(cfg) {
+  const key = cfg.locationId ?? "";
   const cached2 = fieldDefsCache.get(key);
   if (cached2 && Date.now() - cached2.cachedAt < FIELD_DEFS_TTL_MS)
     return cached2.byId;
   const byId = /* @__PURE__ */ new Map();
   try {
-    const data = await ghlFetch(cfg2, `/locations/${cfg2.locationId}/customFields`, {
+    const data = await ghlFetch(cfg, `/locations/${cfg.locationId}/customFields`, {
       query: { model: "all" }
     });
     for (const def of data.customFields ?? []) {
@@ -22573,22 +22940,22 @@ function contactDisplayName(c) {
   return c.contactName || [c.firstName, c.lastName].filter(Boolean).join(" ") || c.email || c.phone || `Contact ${c.id.slice(0, 6)}`;
 }
 var LOOKS_LIKE_ID = /^[A-Za-z0-9]{15,}$/;
-async function resolveContact(cfg2, ref) {
+async function resolveContact(cfg, ref) {
   const trimmed = ref.trim();
   if (LOOKS_LIKE_ID.test(trimmed) && !trimmed.includes("@")) {
     try {
-      const contact2 = await getContact(cfg2, trimmed);
+      const contact2 = await getContact(cfg, trimmed);
       if (contact2?.id)
         return { kind: "found", contact: contact2 };
     } catch {
     }
   }
-  const matches2 = await searchContacts(cfg2, trimmed, 5);
+  const matches2 = await searchContacts(cfg, trimmed, 5);
   if (matches2.length === 0)
     return { kind: "none" };
   if (matches2.length > 1)
     return { kind: "ambiguous", candidates: matches2 };
-  const contact = await getContact(cfg2, matches2[0].id);
+  const contact = await getContact(cfg, matches2[0].id);
   return contact?.id ? { kind: "found", contact } : { kind: "none" };
 }
 function describeResolutionMiss(ref, res) {
@@ -22604,19 +22971,19 @@ ${lines.join("\n")}`;
 }
 
 // dist/server/tenant.js
-function tenantProblem(cfg2) {
+function tenantProblem(cfg) {
   const missing = [];
-  if (!cfg2.locationId)
+  if (!cfg.locationId)
     missing.push("GHL_LOCATION_ID");
-  if (!cfg2.ghlPit && !cfg2.vault) {
+  if (!cfg.ghlPit && !cfg.vault) {
     missing.push("a GoHighLevel credential (either GHL_PRIVATE_INTEGRATION_TOKEN, or MILES_TOKEN_DB_URL + MILES_TOKEN_DB_KEY for the local token vault)");
   }
   if (missing.length === 0)
     return null;
-  if (cfg2.mode === "http") {
+  if (cfg.mode === "http") {
     return "Your Otto AI connection isn't fully set up on our side yet \u2014 your account doesn't have a GoHighLevel location linked. Please contact Limo Marketer support.";
   }
-  const envPath2 = cfg2.envFile?.path ?? ".env";
+  const envPath2 = cfg.envFile?.path ?? ".env";
   return `Otto AI isn't fully set up yet. Missing in the .env file: ${missing.join(" and ")}.
 
 Open ${envPath2} in any text editor, fill in the value(s) after the = sign (the comments in that file explain each one), save, then restart Claude Desktop. You can run the check_connection tool afterwards to confirm everything works.`;
@@ -22633,18 +23000,18 @@ var findContactTool = {
     limit: external_exports.number().int().min(1).max(20).default(5).describe("Max matches to list when several fit.")
   },
   logArgs: () => void 0,
-  handler: async ({ cfg: cfg2 }, args) => {
-    const problem = tenantProblem(cfg2);
+  handler: async ({ cfg }, args) => {
+    const problem = tenantProblem(cfg);
     if (problem)
       return problem;
     const query = String(args.query ?? "").trim();
     if (!query)
       return "Tell me who to find \u2014 a name, email, or phone number.";
     try {
-      const res = await resolveContact(cfg2, query);
+      const res = await resolveContact(cfg, query);
       if (res.kind === "ambiguous") {
         const limit = Number(args.limit ?? 5);
-        const candidates = res.candidates.length >= 5 && limit > 5 ? await searchContacts(cfg2, query, limit) : res.candidates;
+        const candidates = res.candidates.length >= 5 && limit > 5 ? await searchContacts(cfg, query, limit) : res.candidates;
         return describeResolutionMiss(query, candidates === res.candidates ? res : { kind: "ambiguous", candidates }) ?? "Multiple matches found.";
       }
       const miss = describeResolutionMiss(query, res);
@@ -22654,8 +23021,8 @@ var findContactTool = {
         return "No contact found.";
       const c = res.contact;
       const [fieldNames, userNames] = await Promise.all([
-        getCustomFieldNames(cfg2),
-        listUsers(cfg2)
+        getCustomFieldNames(cfg),
+        listUsers(cfg)
       ]);
       const lines = [];
       lines.push(`## ${contactDisplayName(c)}`);
@@ -22697,13 +23064,13 @@ var findContactTool = {
 // dist/ghl/apiPipelines.js
 var PIPELINE_TTL_MS = 60 * 60 * 1e3;
 var pipelineCache = /* @__PURE__ */ new Map();
-async function getPipelines(cfg2) {
-  const key = cfg2.locationId ?? "";
+async function getPipelines(cfg) {
+  const key = cfg.locationId ?? "";
   const cached2 = pipelineCache.get(key);
   if (cached2 && Date.now() - cached2.cachedAt < PIPELINE_TTL_MS)
     return cached2.pipelines;
-  const data = await ghlFetch(cfg2, "/opportunities/pipelines", {
-    query: { locationId: cfg2.locationId }
+  const data = await ghlFetch(cfg, "/opportunities/pipelines", {
+    query: { locationId: cfg.locationId }
   });
   const pipelines = (data.pipelines ?? []).map((p) => ({
     id: p.id,
@@ -22720,15 +23087,15 @@ function matchPipeline(pipelines, name) {
 function matchStage(pipeline, stageName) {
   return pipeline.stages.find((s) => norm(s.name) === norm(stageName));
 }
-async function searchOpportunities(cfg2, filters2 = {}) {
+async function searchOpportunities(cfg, filters2 = {}) {
   const collected = [];
   let total;
   const maxPages = filters2.maxPages ?? 5;
   let page2 = 1;
   while (page2 <= maxPages) {
-    const data = await ghlFetch(cfg2, "/opportunities/search", {
+    const data = await ghlFetch(cfg, "/opportunities/search", {
       query: {
-        location_id: cfg2.locationId,
+        location_id: cfg.locationId,
         limit: 100,
         page: page2,
         status: filters2.status,
@@ -22745,14 +23112,14 @@ async function searchOpportunities(cfg2, filters2 = {}) {
   }
   return { opportunities: collected, total };
 }
-async function getOpportunity(cfg2, opportunityId) {
-  const data = await ghlFetch(cfg2, `/opportunities/${opportunityId}`, {
+async function getOpportunity(cfg, opportunityId) {
+  const data = await ghlFetch(cfg, `/opportunities/${opportunityId}`, {
     version: "2021-07-28"
   });
   return data.opportunity ?? data;
 }
-async function listWorkflows(cfg2) {
-  const data = await ghlFetch(cfg2, "/workflows/", { query: { locationId: cfg2.locationId } });
+async function listWorkflows(cfg) {
+  const data = await ghlFetch(cfg, "/workflows/", { query: { locationId: cfg.locationId } });
   return data.workflows ?? [];
 }
 
@@ -22788,17 +23155,17 @@ function median(nums) {
   const mid = Math.floor(s.length / 2);
   return s.length % 2 ? s[mid] : (s[mid - 1] + s[mid]) / 2;
 }
-async function buildLeadReport(cfg2, start, end, detailLimit = DETAIL_LIMIT_DEFAULT) {
+async function buildLeadReport(cfg, start, end, detailLimit = DETAIL_LIMIT_DEFAULT) {
   const [window, userNames] = await Promise.all([
-    getContactsAddedBetween(cfg2, start, end, Math.max(500, detailLimit * 2)),
-    listUsers(cfg2)
+    getContactsAddedBetween(cfg, start, end, Math.max(500, detailLimit * 2)),
+    listUsers(cfg)
   ]);
   const contacts = window.contacts;
   const toAnalyze = contacts.slice(0, detailLimit);
   let analysisErrors = 0;
   const leads = await pooled(toAnalyze, 4, async (contact) => {
     const createdAt = contact.dateAdded ? new Date(contact.dateAdded) : start;
-    const base2 = {
+    const base = {
       contactId: contact.id,
       name: contactDisplayName2(contact),
       createdAt,
@@ -22806,10 +23173,10 @@ async function buildLeadReport(cfg2, start, end, detailLimit = DETAIL_LIMIT_DEFA
       responded: false
     };
     try {
-      const conversations = await getConversationsForContact(cfg2, contact.id);
+      const conversations = await getConversationsForContact(cfg, contact.id);
       let first;
       for (const convo of conversations) {
-        const messages = await getMessages(cfg2, convo.id);
+        const messages = await getMessages(cfg, convo.id);
         for (const m of messages) {
           if (m.direction !== "outbound" || !m.dateAdded)
             continue;
@@ -22824,15 +23191,15 @@ async function buildLeadReport(cfg2, start, end, detailLimit = DETAIL_LIMIT_DEFA
         }
       }
       if (first) {
-        base2.responded = true;
-        base2.firstResponseMinutes = (first.at.getTime() - createdAt.getTime()) / 6e4;
-        base2.channel = first.channel;
-        base2.respondedBy = first.userId ? userNames.get(first.userId) ?? "Automation / unknown user" : "Automation";
+        base.responded = true;
+        base.firstResponseMinutes = (first.at.getTime() - createdAt.getTime()) / 6e4;
+        base.channel = first.channel;
+        base.respondedBy = first.userId ? userNames.get(first.userId) ?? "Automation / unknown user" : "Automation";
       }
     } catch {
       analysisErrors++;
     }
-    return base2;
+    return base;
   });
   const responded = leads.filter((l) => l.responded);
   const times = responded.map((l) => l.firstResponseMinutes).filter((n) => n !== void 0);
@@ -22883,15 +23250,15 @@ function stageNameFor(pipelines, o) {
   const pipeline = pipelines.find((p) => p.id === o.pipelineId);
   return pipeline?.stages.find((s) => s.id === o.pipelineStageId)?.name;
 }
-async function lastRealMessage(cfg2, contactId, budget) {
+async function lastRealMessage(cfg, contactId, budget) {
   if (!budget.take(1))
     return "budget";
-  const conversations = await getConversationsForContact(cfg2, contactId);
+  const conversations = await getConversationsForContact(cfg, contactId);
   let latest = null;
   for (const convo of conversations.slice(0, 3)) {
     if (!budget.take(1))
       return "budget";
-    const messages = await getMessages(cfg2, convo.id);
+    const messages = await getMessages(cfg, convo.id);
     for (const m of messages) {
       if (!m.dateAdded || (m.messageType ?? "").includes("ACTIVITY"))
         continue;
@@ -22914,8 +23281,8 @@ var getAwaitingReplyTool = {
     ...dateRangeArgs
   },
   logArgs: (args) => ({ ...logRangeArgs(args), mode: args.mode, offset: args.offset }),
-  handler: async ({ cfg: cfg2 }, args) => {
-    const problem = tenantProblem(cfg2);
+  handler: async ({ cfg }, args) => {
+    const problem = tenantProblem(cfg);
     if (problem)
       return problem;
     const mode = args.mode === "gone_quiet" ? "gone_quiet" : "customer_waiting";
@@ -22925,7 +23292,7 @@ var getAwaitingReplyTool = {
     if ("error" in range)
       return range.error;
     try {
-      const pipelines = await getPipelines(cfg2);
+      const pipelines = await getPipelines(cfg);
       let pipelineId;
       if (args.pipeline) {
         const match = matchPipeline(pipelines, String(args.pipeline));
@@ -22934,7 +23301,7 @@ var getAwaitingReplyTool = {
         }
         pipelineId = match.id;
       }
-      const { opportunities } = await searchOpportunities(cfg2, { status: "open", pipelineId });
+      const { opportunities } = await searchOpportunities(cfg, { status: "open", pipelineId });
       let candidates = opportunities.filter((o) => o.contactId);
       if (range.deep) {
         candidates = candidates.filter((o) => {
@@ -22951,7 +23318,7 @@ var getAwaitingReplyTool = {
       const flagged = [];
       let checked = 0;
       await pooled(toCheck, 4, async (o) => {
-        const last = await lastRealMessage(cfg2, o.contactId, budget);
+        const last = await lastRealMessage(cfg, o.contactId, budget);
         if (last === "budget")
           return;
         checked++;
@@ -23014,29 +23381,29 @@ var getConversationTool = {
     limit: external_exports.number().int().min(1).max(100).default(50).describe("Max messages to show (most recent kept).")
   },
   logArgs: () => void 0,
-  handler: async ({ cfg: cfg2 }, args) => {
-    const problem = tenantProblem(cfg2);
+  handler: async ({ cfg }, args) => {
+    const problem = tenantProblem(cfg);
     if (problem)
       return problem;
     const ref = String(args.contact ?? "").trim();
     if (!ref)
       return "Tell me whose conversation to pull \u2014 a name, email, or phone number.";
     try {
-      const res = await resolveContact(cfg2, ref);
+      const res = await resolveContact(cfg, ref);
       const miss = describeResolutionMiss(ref, res);
       if (miss)
         return miss;
       if (res.kind !== "found")
         return "No contact found.";
       const contact = res.contact;
-      const conversations = await getConversationsForContact(cfg2, contact.id);
+      const conversations = await getConversationsForContact(cfg, contact.id);
       if (conversations.length === 0) {
         return `${contactDisplayName(contact)} has no conversations yet \u2014 no messages have been exchanged.`;
       }
-      const userNames = await listUsers(cfg2);
+      const userNames = await listUsers(cfg);
       const all = [];
       for (const convo of conversations.slice(0, 5)) {
-        all.push(...await getMessages(cfg2, convo.id));
+        all.push(...await getMessages(cfg, convo.id));
       }
       const real = all.filter((m) => m.dateAdded && !(m.messageType ?? "").includes("ACTIVITY")).sort((a, b) => new Date(a.dateAdded).getTime() - new Date(b.dateAdded).getTime());
       const limit = Number(args.limit ?? 50);
@@ -23160,15 +23527,15 @@ function stageNameFor2(pipelines, o) {
   const pipeline = pipelines.find((p) => p.id === o.pipelineId);
   return pipeline?.stages.find((s) => s.id === o.pipelineStageId)?.name ?? "\u2014";
 }
-async function realMessages(cfg2, contactId, budget) {
+async function realMessages(cfg, contactId, budget) {
   if (!budget.take(1))
     return "budget";
-  const conversations = await getConversationsForContact(cfg2, contactId);
+  const conversations = await getConversationsForContact(cfg, contactId);
   const all = [];
   for (const convo of conversations.slice(0, 3)) {
     if (!budget.take(1))
       return "budget";
-    all.push(...await getMessages(cfg2, convo.id));
+    all.push(...await getMessages(cfg, convo.id));
   }
   return all.filter((m) => m.dateAdded && !(m.messageType ?? "").includes("ACTIVITY")).sort((a, b) => new Date(a.dateAdded).getTime() - new Date(b.dateAdded).getTime());
 }
@@ -23231,15 +23598,15 @@ var getFollowupCandidatesTool = {
     quiet_hours: args.quiet_hours,
     include_phone_bookings: args.include_phone_bookings
   }),
-  handler: async ({ cfg: cfg2 }, args) => {
-    const problem = tenantProblem(cfg2);
+  handler: async ({ cfg }, args) => {
+    const problem = tenantProblem(cfg);
     if (problem)
       return problem;
     const count = Math.min(10, Math.max(1, Number(args.count ?? 5)));
     const quietMinutes = Number(args.quiet_hours ?? 24) * 60;
     const includePhone = args.include_phone_bookings !== false;
     try {
-      const pipelines = await getPipelines(cfg2);
+      const pipelines = await getPipelines(cfg);
       let pipelineId;
       if (args.pipeline) {
         const match = matchPipeline(pipelines, String(args.pipeline));
@@ -23248,8 +23615,8 @@ var getFollowupCandidatesTool = {
         }
         pipelineId = match.id;
       }
-      const { opportunities } = await searchOpportunities(cfg2, { status: "open", pipelineId });
-      const fieldNames = await getCustomFieldNames(cfg2);
+      const { opportunities } = await searchOpportunities(cfg, { status: "open", pipelineId });
+      const fieldNames = await getCustomFieldNames(cfg);
       const todayStart = /* @__PURE__ */ new Date();
       todayStart.setHours(0, 0, 0, 0);
       let pastPickup = 0;
@@ -23280,7 +23647,7 @@ var getFollowupCandidatesTool = {
       let recentlyContacted = 0;
       let budgetStopped = false;
       const dossiers = (await pooled(window, 4, async ({ o, pickup }) => {
-        const messages = await realMessages(cfg2, o.contactId, budget);
+        const messages = await realMessages(cfg, o.contactId, budget);
         if (messages === "budget") {
           budgetStopped = true;
           return null;
@@ -23297,7 +23664,7 @@ var getFollowupCandidatesTool = {
         let contact;
         if (budget.take(1)) {
           try {
-            contact = await getContact(cfg2, o.contactId);
+            contact = await getContact(cfg, o.contactId);
           } catch {
           }
         }
@@ -23351,13 +23718,13 @@ var getFollowupCandidatesTool = {
 };
 
 // dist/tools/ghl/getNewLeads.js
-async function getNewLeads(cfg2, range) {
-  const problem = tenantProblem(cfg2);
+async function getNewLeads(cfg, range) {
+  const problem = tenantProblem(cfg);
   if (problem)
     return problem;
   let report;
   try {
-    report = await buildLeadReport(cfg2, range.start, range.end, range.deep ? DETAIL_LIMIT_MAX : DETAIL_LIMIT_DEFAULT);
+    report = await buildLeadReport(cfg, range.start, range.end, range.deep ? DETAIL_LIMIT_MAX : DETAIL_LIMIT_DEFAULT);
   } catch (err) {
     if (err instanceof GhlError)
       return `Couldn't pull leads from GoHighLevel. ${err.friendly()}`;
@@ -23415,11 +23782,11 @@ var getNewLeadsTool = {
   kind: "read",
   inputSchema: { period: periodArg, ...dateRangeArgs },
   logArgs: logRangeArgs,
-  handler: ({ cfg: cfg2 }, args) => {
+  handler: ({ cfg }, args) => {
     const range = resolveRangeArgs(args.period ?? "last_7_days", args);
     if ("error" in range)
       return Promise.resolve(range.error);
-    return getNewLeads(cfg2, range);
+    return getNewLeads(cfg, range);
   }
 };
 
@@ -23434,12 +23801,12 @@ var getPipelineOverviewTool = {
     pipeline: external_exports.string().optional().describe("Limit to one pipeline by name (default: all).")
   },
   logArgs: (args) => args.pipeline ? { pipeline: args.pipeline } : {},
-  handler: async ({ cfg: cfg2 }, args) => {
-    const problem = tenantProblem(cfg2);
+  handler: async ({ cfg }, args) => {
+    const problem = tenantProblem(cfg);
     if (problem)
       return problem;
     try {
-      const pipelines = await getPipelines(cfg2);
+      const pipelines = await getPipelines(cfg);
       if (pipelines.length === 0)
         return "This account has no sales pipelines set up.";
       let selected = pipelines;
@@ -23450,7 +23817,7 @@ var getPipelineOverviewTool = {
         }
         selected = [match];
       }
-      const { opportunities, total } = await searchOpportunities(cfg2, {
+      const { opportunities, total } = await searchOpportunities(cfg, {
         pipelineId: selected.length === 1 ? selected[0].id : void 0
       });
       const lines = [];
@@ -23485,8 +23852,8 @@ var getPipelineOverviewTool = {
 };
 
 // dist/tools/ghl/getWeeklyNumbers.js
-async function getWeeklyNumbers(cfg2, range) {
-  const problem = tenantProblem(cfg2);
+async function getWeeklyNumbers(cfg, range) {
+  const problem = tenantProblem(cfg);
   if (problem)
     return problem;
   let leadsCount = 0;
@@ -23494,7 +23861,7 @@ async function getWeeklyNumbers(cfg2, range) {
   let winsLine;
   let revenueLine;
   try {
-    const window = await getContactsAddedBetween(cfg2, range.start, range.end);
+    const window = await getContactsAddedBetween(cfg, range.start, range.end);
     leadsCount = Math.max(window.total ?? 0, window.contacts.length);
   } catch (err) {
     if (err instanceof GhlError)
@@ -23502,14 +23869,14 @@ async function getWeeklyNumbers(cfg2, range) {
     throw err;
   }
   try {
-    const events = await getCalendarEvents(cfg2, range.start, range.end);
+    const events = await getCalendarEvents(cfg, range.start, range.end);
     const cancelled = events.filter((e) => e.appointmentStatus === "cancelled").length;
     appointmentsLine = `**Appointments on the calendar:** ${events.length - cancelled}${cancelled > 0 ? ` (plus ${cancelled} cancelled)` : ""}`;
   } catch {
     appointmentsLine = "**Appointments:** couldn't be read (the token may be missing the calendar scope \u2014 run check_connection).";
   }
   try {
-    const opportunities = await getOpportunities(cfg2);
+    const opportunities = await getOpportunities(cfg);
     const inWindow = (dateStr) => {
       if (!dateStr)
         return false;
@@ -23544,11 +23911,11 @@ var getWeeklyNumbersTool = {
   kind: "read",
   inputSchema: { ...dateRangeArgs },
   logArgs: logRangeArgs,
-  handler: ({ cfg: cfg2 }, args) => {
+  handler: ({ cfg }, args) => {
     const range = resolveRangeArgs("last_7_days", args);
     if ("error" in range)
       return Promise.resolve(range.error);
-    return getWeeklyNumbers(cfg2, range);
+    return getWeeklyNumbers(cfg, range);
   }
 };
 
@@ -23562,8 +23929,8 @@ var listAppointmentsTool = {
   kind: "read",
   inputSchema: { period: periodArg, ...dateRangeArgs },
   logArgs: logRangeArgs,
-  handler: async ({ cfg: cfg2 }, args) => {
-    const problem = tenantProblem(cfg2);
+  handler: async ({ cfg }, args) => {
+    const problem = tenantProblem(cfg);
     if (problem)
       return problem;
     let start;
@@ -23583,7 +23950,7 @@ var listAppointmentsTool = {
       ({ start, end, label } = range);
     }
     try {
-      const events = (await getCalendarEvents(cfg2, start, end)).sort((a, b) => new Date(a.startTime ?? 0).getTime() - new Date(b.startTime ?? 0).getTime());
+      const events = (await getCalendarEvents(cfg, start, end)).sort((a, b) => new Date(a.startTime ?? 0).getTime() - new Date(b.startTime ?? 0).getTime());
       if (events.length === 0) {
         return `No appointments on the calendar for ${label} (${fmtDate(start)} \u2013 ${fmtDate(end)}).`;
       }
@@ -23593,7 +23960,7 @@ var listAppointmentsTool = {
       ];
       await pooled(idsToResolve, 4, async (id) => {
         try {
-          const contact = await getContact(cfg2, id);
+          const contact = await getContact(cfg, id);
           if (contact)
             names.set(id, contactDisplayName(contact));
         } catch {
@@ -23661,15 +24028,15 @@ var listOpportunitiesTool = {
     sort: args.sort,
     limit: args.limit
   }),
-  handler: async ({ cfg: cfg2 }, args) => {
-    const problem = tenantProblem(cfg2);
+  handler: async ({ cfg }, args) => {
+    const problem = tenantProblem(cfg);
     if (problem)
       return problem;
     const status = String(args.status ?? "open");
     const sort = String(args.sort ?? "value");
     const limit = Math.min(40, Math.max(1, Number(args.limit ?? 10)));
     try {
-      const pipelines = await getPipelines(cfg2);
+      const pipelines = await getPipelines(cfg);
       let pipelineId;
       if (args.pipeline) {
         const match = matchPipeline(pipelines, String(args.pipeline));
@@ -23678,7 +24045,7 @@ var listOpportunitiesTool = {
         }
         pipelineId = match.id;
       }
-      const { opportunities } = await searchOpportunities(cfg2, {
+      const { opportunities } = await searchOpportunities(cfg, {
         status: status === "all" ? void 0 : status,
         pipelineId
       });
@@ -23710,7 +24077,7 @@ var listOpportunitiesTool = {
       if (filtered.length === 0) {
         return `No ${status === "all" ? "" : status + " "}opportunities found${rangeNote || (args.pipeline ? ` in pipeline "${args.pipeline}"` : "")}.`;
       }
-      const fieldNames = await getCustomFieldNames(cfg2);
+      const fieldNames = await getCustomFieldNames(cfg);
       const shown = filtered.slice(0, limit);
       const lines = [];
       const sortLabel = sort === "created" ? "newest first" : sort === "recent_activity" ? "most recently active first" : "highest value first";
@@ -23743,12 +24110,12 @@ var listTeamTool = {
   description: "Lists the team members on this GoHighLevel account with their contact details \u2014 useful for 'who responded' context and task assignment.",
   kind: "read",
   inputSchema: {},
-  handler: async ({ cfg: cfg2 }) => {
-    const problem = tenantProblem(cfg2);
+  handler: async ({ cfg }) => {
+    const problem = tenantProblem(cfg);
     if (problem)
       return problem;
     try {
-      const users = await listUsersDetailed(cfg2);
+      const users = await listUsersDetailed(cfg);
       if (users.length === 0)
         return "No team members are visible on this account.";
       const lines = [`## Team (${users.length})`, ""];
@@ -23772,12 +24139,12 @@ var listWorkflowsTool = {
   description: "Lists the automation workflows on this GoHighLevel account and whether each is active \u2014 useful for diagnosing why leads did or didn't get automated follow-up.",
   kind: "read",
   inputSchema: {},
-  handler: async ({ cfg: cfg2 }) => {
-    const problem = tenantProblem(cfg2);
+  handler: async ({ cfg }) => {
+    const problem = tenantProblem(cfg);
     if (problem)
       return problem;
     try {
-      const workflows = await listWorkflows(cfg2);
+      const workflows = await listWorkflows(cfg);
       if (workflows.length === 0)
         return "No automation workflows are set up on this account.";
       const lines = [`## Workflows (${workflows.length})`, ""];
@@ -23805,8 +24172,8 @@ var prepareAddNoteTool = {
     note: external_exports.string().min(1).max(5e3).describe("The note text to save on the contact.")
   },
   logArgs: () => ({}),
-  handler: async ({ cfg: cfg2, gate }, args) => {
-    const problem = tenantProblem(cfg2);
+  handler: async ({ cfg, gate }, args) => {
+    const problem = tenantProblem(cfg);
     if (problem)
       return problem;
     if (!gate)
@@ -23815,7 +24182,7 @@ var prepareAddNoteTool = {
     if (!note)
       return "The note is empty \u2014 write what should be saved.";
     try {
-      const res = await resolveContact(cfg2, String(args.contact ?? ""));
+      const res = await resolveContact(cfg, String(args.contact ?? ""));
       const miss = describeResolutionMiss(String(args.contact ?? ""), res);
       if (miss)
         return miss;
@@ -23871,20 +24238,20 @@ var prepareCreateOpportunityTool = {
     allow_duplicate: external_exports.boolean().default(false).describe("Set true ONLY when the operator explicitly wants a second open deal for a contact who already has one in this pipeline.")
   },
   logArgs: (args) => ({ pipeline: args.pipeline, stage: args.stage, value: args.value }),
-  handler: async ({ cfg: cfg2, gate }, args) => {
-    const problem = tenantProblem(cfg2);
+  handler: async ({ cfg, gate }, args) => {
+    const problem = tenantProblem(cfg);
     if (problem)
       return problem;
     if (!gate)
       return NO_WRITES_MESSAGE;
     try {
-      const res = await resolveContact(cfg2, String(args.contact ?? ""));
+      const res = await resolveContact(cfg, String(args.contact ?? ""));
       const miss = describeResolutionMiss(String(args.contact ?? ""), res);
       if (miss || res.kind !== "found")
         return miss ?? "I couldn't resolve that contact.";
       const contact = res.contact;
       const contactName = contactDisplayName(contact);
-      const pipelines = await getPipelines(cfg2);
+      const pipelines = await getPipelines(cfg);
       if (pipelines.length === 0) {
         return "This account has no pipelines set up in GoHighLevel, so there's nowhere to create an opportunity. Create a pipeline in GHL first.";
       }
@@ -23903,7 +24270,7 @@ var prepareCreateOpportunityTool = {
       if (!stage) {
         return `Pipeline "${pipeline.name}" has no stages, so a deal can't be placed in it. Add stages to it in GoHighLevel first.`;
       }
-      const { opportunities } = await searchOpportunities(cfg2, {
+      const { opportunities } = await searchOpportunities(cfg, {
         status: "open",
         pipelineId: pipeline.id,
         maxPages: 3
@@ -23954,17 +24321,17 @@ I won't create a duplicate unless the operator explicitly wants one \u2014 if th
 var LOOKS_LIKE_ID2 = /^[A-Za-z0-9]{15,}$/;
 var TERMINAL = /* @__PURE__ */ new Set(["won", "lost", "abandoned"]);
 var norm2 = (s) => s.trim().toLowerCase();
-async function resolveOpportunity(cfg2, ref) {
+async function resolveOpportunity(cfg, ref) {
   const trimmed = ref.trim();
   if (LOOKS_LIKE_ID2.test(trimmed)) {
     try {
-      const opp = await getOpportunity(cfg2, trimmed);
+      const opp = await getOpportunity(cfg, trimmed);
       if (opp?.id)
         return { kind: "found", opportunity: opp };
     } catch {
     }
   }
-  const { opportunities } = await searchOpportunities(cfg2, { maxPages: 3 });
+  const { opportunities } = await searchOpportunities(cfg, { maxPages: 3 });
   const exact = opportunities.filter((o) => norm2(o.name ?? "") === norm2(trimmed));
   const matches2 = exact.length > 0 ? exact : opportunities.filter((o) => norm2(o.name ?? "").includes(norm2(trimmed)));
   if (matches2.length === 0)
@@ -23989,8 +24356,8 @@ var prepareMoveOpportunityTool = {
     allow_reopen: external_exports.boolean().default(false).describe("Set true ONLY when the operator explicitly wants to change a deal already marked won/lost.")
   },
   logArgs: (args) => ({ to_stage: args.to_stage, mark: args.mark }),
-  handler: async ({ cfg: cfg2, gate }, args) => {
-    const problem = tenantProblem(cfg2);
+  handler: async ({ cfg, gate }, args) => {
+    const problem = tenantProblem(cfg);
     if (problem)
       return problem;
     if (!gate)
@@ -24001,7 +24368,7 @@ var prepareMoveOpportunityTool = {
       return "Give exactly one of to_stage (move it) or mark (won/lost).";
     }
     try {
-      const res = await resolveOpportunity(cfg2, String(args.opportunity ?? ""));
+      const res = await resolveOpportunity(cfg, String(args.opportunity ?? ""));
       if (res.kind === "none") {
         return `I couldn't find an opportunity matching "${args.opportunity}". Try its exact name or ID (get_pipeline_overview and get_awaiting_reply show them).`;
       }
@@ -24011,7 +24378,7 @@ var prepareMoveOpportunityTool = {
 ${lines.join("\n")}`;
       }
       const opp = res.opportunity;
-      const pipelines = await getPipelines(cfg2);
+      const pipelines = await getPipelines(cfg);
       const { pipeline, stageName } = describeStage(pipelines, opp);
       const label = `"${opp.name ?? opp.id}"${opp.monetaryValue ? ` \u2014 $${opp.monetaryValue.toLocaleString("en-US", { maximumFractionDigits: 0 })}` : ""}`;
       const currentStatus = (opp.status ?? "open").toLowerCase();
@@ -24060,7 +24427,7 @@ ${lines.join("\n")}`;
 };
 
 // dist/tools/ghl/prepareSendMessage.js
-function escapeHtml(value) {
+function escapeHtml2(value) {
   return value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;");
 }
 var prepareSendMessageTool = {
@@ -24075,8 +24442,8 @@ var prepareSendMessageTool = {
     subject: external_exports.string().max(200).optional().describe("Email subject (required for email).")
   },
   logArgs: (args) => ({ channel: args.channel }),
-  handler: async ({ cfg: cfg2, gate }, args) => {
-    const problem = tenantProblem(cfg2);
+  handler: async ({ cfg, gate }, args) => {
+    const problem = tenantProblem(cfg);
     if (problem)
       return problem;
     if (!gate)
@@ -24090,7 +24457,7 @@ var prepareSendMessageTool = {
       return "Emails need a subject line \u2014 add a subject and prepare again.";
     }
     try {
-      const res = await resolveContact(cfg2, String(args.contact ?? ""));
+      const res = await resolveContact(cfg, String(args.contact ?? ""));
       const miss = describeResolutionMiss(String(args.contact ?? ""), res);
       if (miss)
         return miss;
@@ -24111,7 +24478,7 @@ var prepareSendMessageTool = {
         contactId: contact.id,
         contactName: name,
         subject,
-        html: escapeHtml(message).replaceAll("\n", "<br>"),
+        html: escapeHtml2(message).replaceAll("\n", "<br>"),
         text: message
       };
       const previewLines = [
@@ -24152,8 +24519,8 @@ var prepareUpdateTagsTool = {
     add_count: Array.isArray(args.add) ? args.add.length : 0,
     remove_count: Array.isArray(args.remove) ? args.remove.length : 0
   }),
-  handler: async ({ cfg: cfg2, gate }, args) => {
-    const problem = tenantProblem(cfg2);
+  handler: async ({ cfg, gate }, args) => {
+    const problem = tenantProblem(cfg);
     if (problem)
       return problem;
     if (!gate)
@@ -24164,7 +24531,7 @@ var prepareUpdateTagsTool = {
       return "Tell me which tags to add or remove.";
     }
     try {
-      const res = await resolveContact(cfg2, String(args.contact ?? ""));
+      const res = await resolveContact(cfg, String(args.contact ?? ""));
       const miss = describeResolutionMiss(String(args.contact ?? ""), res);
       if (miss)
         return miss;
@@ -24244,13 +24611,13 @@ function buildGrades(report, bookedPct) {
   }
   return grades;
 }
-async function runSalesAssessment(cfg2, range) {
-  const problem = tenantProblem(cfg2);
+async function runSalesAssessment(cfg, range) {
+  const problem = tenantProblem(cfg);
   if (problem)
     return problem;
   let report;
   try {
-    report = await buildLeadReport(cfg2, range.start, range.end, range.deep ? DETAIL_LIMIT_MAX : 75);
+    report = await buildLeadReport(cfg, range.start, range.end, range.deep ? DETAIL_LIMIT_MAX : 75);
   } catch (err) {
     if (err instanceof GhlError)
       return `Couldn't run the assessment. ${err.friendly()}`;
@@ -24260,8 +24627,8 @@ async function runSalesAssessment(cfg2, range) {
   try {
     const leadIds = new Set(report.leads.map((l) => l.contactId));
     const [events, opportunities] = await Promise.all([
-      getCalendarEvents(cfg2, range.start, /* @__PURE__ */ new Date()),
-      getOpportunities(cfg2)
+      getCalendarEvents(cfg, range.start, /* @__PURE__ */ new Date()),
+      getOpportunities(cfg)
     ]);
     const bookedContactIds = /* @__PURE__ */ new Set();
     for (const e of events) {
@@ -24313,135 +24680,13 @@ var runSalesAssessmentTool = {
   kind: "read",
   inputSchema: { ...dateRangeArgs },
   logArgs: logRangeArgs,
-  handler: ({ cfg: cfg2 }, args) => {
+  handler: ({ cfg }, args) => {
     const range = resolveRangeArgs("last_30_days", args);
     if ("error" in range)
       return Promise.resolve(range.error);
-    return runSalesAssessment(cfg2, range);
+    return runSalesAssessment(cfg, range);
   }
 };
-
-// dist/la/errors.js
-var LaError = class extends Error {
-  status;
-  body;
-  customFriendly;
-  constructor(status, body, path3, friendly2) {
-    super(`LimoAnywhere error ${status} on ${path3}`);
-    this.status = status;
-    this.body = body;
-    this.customFriendly = friendly2;
-  }
-  /** A short, non-developer explanation of what likely went wrong. */
-  friendly() {
-    if (this.customFriendly)
-      return this.customFriendly;
-    if (this.status === 401 || this.status === 403) {
-      return "LimoAnywhere wouldn't accept the session (it may have been logged out elsewhere). Try again \u2014 a fresh login happens automatically. If it keeps failing, re-check the LimoAnywhere credentials.";
-    }
-    if (this.status === 429) {
-      return "LimoAnywhere is rate limiting us. Wait a minute and try again.";
-    }
-    if (this.status >= 500) {
-      return "LimoAnywhere itself returned a server error \u2014 it may be down or under maintenance (status.limoanywhere.com shows outages). Try again shortly.";
-    }
-    return `LimoAnywhere returned an unexpected error (${this.status}). Details: ${this.body.slice(0, 300)}`;
-  }
-};
-
-// dist/la/session.js
-var LA_BASE = process.env.MILES_LA_BASE_URL?.trim() || "https://manage.mylimobiz.com";
-var sessionCache = /* @__PURE__ */ new Map();
-function cacheKey(creds) {
-  return `${creds.companyId}\0${creds.username}`;
-}
-function cookieHeader(session) {
-  return [...session.cookies.entries()].map(([k, v]) => `${k}=${v}`).join("; ");
-}
-function absorbSetCookies(session, res) {
-  for (const raw of res.headers.getSetCookie()) {
-    const [pair] = raw.split(";");
-    const eq2 = pair.indexOf("=");
-    if (eq2 <= 0)
-      continue;
-    const name = pair.slice(0, eq2).trim();
-    const value = pair.slice(eq2 + 1).trim();
-    if (value === "")
-      session.cookies.delete(name);
-    else
-      session.cookies.set(name, value);
-  }
-}
-function laProblem(cfg2) {
-  if (cfg2.la)
-    return null;
-  if (cfg2.setupHint)
-    return cfg2.setupHint;
-  if (cfg2.mode === "http") {
-    if (cfg2.laVault) {
-      return "LimoAnywhere isn't connected for your account yet. Open the Otto AI page in your Booked Rides portal, link your LimoAnywhere login under the LimoAnywhere card, then try again.";
-    }
-    return "LimoAnywhere isn't connected for your Otto AI login yet \u2014 please contact Limo Marketer support to link it.";
-  }
-  const envPath2 = cfg2.envFile?.path ?? ".env";
-  return `LimoAnywhere isn't set up yet. Add LA_COMPANY_ID, LA_USERNAME and LA_PASSWORD to ${envPath2} (the same three things typed into the manage.mylimobiz.com login form), save, then restart Claude Desktop. Run la_check_connection afterwards to confirm.`;
-}
-async function laLogin(creds) {
-  const session = {
-    creds,
-    cookies: /* @__PURE__ */ new Map(),
-    loggedInAtMs: Date.now()
-  };
-  const loginPage = await fetch(`${LA_BASE}/admin/login.asp`, { redirect: "manual" });
-  absorbSetCookies(session, loginPage);
-  const form = new URLSearchParams({
-    companyid: creds.companyId,
-    username: creds.username,
-    password: creds.password,
-    isLASupportUser: "false",
-    dispatchRedirectUrl: "",
-    rememberme: "on"
-  });
-  const res = await fetch(`${LA_BASE}/admin/loginNow.asp`, {
-    method: "POST",
-    redirect: "manual",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      Cookie: cookieHeader(session)
-    },
-    body: form.toString()
-  });
-  absorbSetCookies(session, res);
-  const redirectedTo = res.headers.get("location") ?? "";
-  const failed = /login\.asp/i.test(redirectedTo) || res.status === 200 && /name="Login"/i.test(await res.text().catch(() => ""));
-  if (failed) {
-    throw new LaError(401, "login rejected", "/admin/loginNow.asp", "LimoAnywhere rejected the login. Double-check LA_COMPANY_ID, LA_USERNAME and LA_PASSWORD \u2014 they're the same three fields as the manage.mylimobiz.com login form. If they work in a browser, the password may have just been changed.");
-  }
-  if (res.status >= 400) {
-    throw new LaError(res.status, "login failed", "/admin/loginNow.asp");
-  }
-  sessionCache.set(cacheKey(creds), session);
-  return session;
-}
-async function getSession(creds) {
-  return sessionCache.get(cacheKey(creds)) ?? laLogin(creds);
-}
-function invalidateSession(creds) {
-  sessionCache.delete(cacheKey(creds));
-}
-async function getVerificationToken(session) {
-  if (session.verificationToken)
-    return session.verificationToken;
-  const res = await fetch(`${LA_BASE}/adminnew/ajax/GetVerificationToken`, {
-    headers: { Cookie: cookieHeader(session), Accept: "application/json" }
-  });
-  if (!res.ok) {
-    throw new LaError(res.status, await res.text().catch(() => ""), "/adminnew/ajax/GetVerificationToken");
-  }
-  const token = await res.json();
-  session.verificationToken = token;
-  return token;
-}
 
 // dist/la/client.js
 var LA_READ_ALLOWLIST = {
@@ -24452,10 +24697,10 @@ var LA_READ_ALLOWLIST = {
   "/admin/_forms/schedulerDataBackEnd.asp": { formMethod: /* @__PURE__ */ new Set(["schedulerDataLoad"]) },
   "/adminnew/ajax/GetVerificationToken": {}
 };
-function assertReadOnly(path3, url, opts) {
+function assertReadOnly(path4, url, opts) {
   const rule = LA_READ_ALLOWLIST[url.pathname];
   const refuse = (why) => {
-    throw new LaError(403, why, path3, `Refused by Otto's read-only guard: ${why}. Otto never changes anything in LimoAnywhere \u2014 it only reads.`);
+    throw new LaError(403, why, path4, `Refused by Otto's read-only guard: ${why}. Otto never changes anything in LimoAnywhere \u2014 it only reads.`);
   };
   if (!rule)
     refuse(`"${url.pathname}" isn't an allowlisted read screen`);
@@ -24477,13 +24722,13 @@ function looksLoggedOut(res, text) {
     return true;
   return res.status === 200 && /name="Login"[\s\S]{0,2000}loginNow\.asp/i.test(text.slice(0, 2e4));
 }
-async function laFetch(creds, path3, opts = {}) {
-  const url = new URL(path3, LA_BASE);
+async function laFetch(creds, path4, opts = {}) {
+  const url = new URL(path4, LA_BASE);
   for (const [k, v] of Object.entries(opts.query ?? {})) {
     if (v !== void 0)
       url.searchParams.set(k, String(v));
   }
-  assertReadOnly(path3, url, opts);
+  assertReadOnly(path4, url, opts);
   const doFetch = async (freshLogin) => {
     const session = freshLogin ? await laLogin(creds) : await getSession(creds);
     const headers2 = {
@@ -24509,14 +24754,14 @@ async function laFetch(creds, path3, opts = {}) {
     invalidateSession(creds);
     ({ res, text } = await doFetch(true));
     if (looksLoggedOut(res, text)) {
-      throw new LaError(401, "still logged out after re-login", path3, "LimoAnywhere keeps bouncing us to its login page even after logging in again. The credentials may lack permission for this screen, or LimoAnywhere is having trouble \u2014 try again shortly.");
+      throw new LaError(401, "still logged out after re-login", path4, "LimoAnywhere keeps bouncing us to its login page even after logging in again. The credentials may lack permission for this screen, or LimoAnywhere is having trouble \u2014 try again shortly.");
     }
   }
   if (res.status === 429) {
-    throw new LaError(429, text, path3);
+    throw new LaError(429, text, path4);
   }
   if (res.status >= 400) {
-    throw new LaError(res.status, text, path3);
+    throw new LaError(res.status, text, path4);
   }
   return text;
 }
@@ -24585,7 +24830,7 @@ async function fetchScheduleTrips(creds, start, end) {
 }
 
 // dist/lib/secretBox.js
-import { createCipheriv, createDecipheriv, randomBytes } from "node:crypto";
+import { createCipheriv, createDecipheriv, randomBytes as randomBytes2 } from "node:crypto";
 var VERSION = "v1";
 function parseSecretKey(keyB64) {
   let key;
@@ -24652,23 +24897,23 @@ async function markLaCredsStatus(db, locationId, status) {
 // dist/tools/limoanywhere/laCommon.js
 var REAUTH_MESSAGE = "LimoAnywhere rejected the saved login \u2014 the password was probably changed. Open the Otto AI page in your Booked Rides portal and re-link LimoAnywhere under the LimoAnywhere card, then try again.";
 var DISABLED_MESSAGE = "The LimoAnywhere connection for your account is currently disabled \u2014 please contact Limo Marketer support.";
-async function resolveLaAccess(cfg2) {
-  if (cfg2.la)
-    return { creds: cfg2.la, fromVault: false };
-  if (cfg2.laVault && cfg2.locationId) {
-    const record2 = await loadLaCreds(cfg2.laVault, cfg2.locationId);
+async function resolveLaAccess(cfg) {
+  if (cfg.la)
+    return { creds: cfg.la, fromVault: false };
+  if (cfg.laVault && cfg.locationId) {
+    const record2 = await loadLaCreds(cfg.laVault, cfg.locationId);
     if (!record2)
-      return { problem: laProblem(cfg2) ?? "LimoAnywhere isn't connected yet." };
+      return { problem: laProblem(cfg) ?? "LimoAnywhere isn't connected yet." };
     if (record2.status === "needs_reauth")
       return { problem: REAUTH_MESSAGE };
     if (record2.status === "disabled")
       return { problem: DISABLED_MESSAGE };
     return { creds: record2.creds, fromVault: true };
   }
-  return { problem: laProblem(cfg2) ?? "LimoAnywhere isn't connected yet." };
+  return { problem: laProblem(cfg) ?? "LimoAnywhere isn't connected yet." };
 }
-async function runLaTool(cfg2, fn) {
-  const access = await resolveLaAccess(cfg2);
+async function runLaTool(cfg, fn) {
+  const access = await resolveLaAccess(cfg);
   if ("problem" in access)
     return access.problem;
   try {
@@ -24676,8 +24921,8 @@ async function runLaTool(cfg2, fn) {
   } catch (err) {
     if (err instanceof LaError) {
       if (access.fromVault && err.status === 401 && err.body === "login rejected") {
-        if (cfg2.laVault && cfg2.locationId) {
-          void markLaCredsStatus(cfg2.laVault.db, cfg2.locationId, "needs_reauth").catch(() => void 0);
+        if (cfg.laVault && cfg.locationId) {
+          void markLaCredsStatus(cfg.laVault.db, cfg.locationId, "needs_reauth").catch(() => void 0);
         }
         return REAUTH_MESSAGE;
       }
@@ -24705,8 +24950,8 @@ var laCheckConnectionTool = {
   description: "Health check for the LimoAnywhere link. Verifies the stored login works, the back office is reachable, and trip/quote data can be read. Use it whenever a la_* tool reports a problem or setup status is in question.",
   kind: "read",
   inputSchema: {},
-  handler: async ({ cfg: cfg2 }) => {
-    const access = await resolveLaAccess(cfg2);
+  handler: async ({ cfg }) => {
+    const access = await resolveLaAccess(cfg);
     if ("problem" in access)
       return `## \u26A0\uFE0F LimoAnywhere isn't connected
 
@@ -24761,133 +25006,6 @@ ${access.problem}`;
 };
 function friendly(err) {
   return err instanceof LaError ? err.friendly() : `Unexpected error: ${err.message}`;
-}
-
-// dist/la/setupServer.js
-import { randomBytes as randomBytes2, timingSafeEqual } from "node:crypto";
-import { createServer } from "node:http";
-var PAGE_TTL_MS = 10 * 60 * 1e3;
-var MAX_BODY_BYTES = 16 * 1024;
-var active;
-function closeActivePage() {
-  if (!active)
-    return;
-  clearTimeout(active.timer);
-  active.server.close();
-  active.server.closeAllConnections?.();
-  active = void 0;
-}
-var escapeHtml2 = (s) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c] ?? c);
-var page = (body) => `<!doctype html><html lang="en"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Otto AI \u2014 Connect LimoAnywhere</title>
-<style>
-  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f5f4f0;
-       display:flex;justify-content:center;padding:48px 16px;color:#1a1a18}
-  .card{background:#fff;border:1px solid #e2e0d8;border-radius:12px;padding:32px;max-width:420px;width:100%}
-  h1{font-size:20px;margin:0 0 6px}
-  p{font-size:14px;line-height:1.5;color:#555}
-  label{display:block;font-size:13px;font-weight:600;margin:16px 0 4px}
-  input{width:100%;box-sizing:border-box;padding:10px;border:1px solid #ccc9bd;border-radius:8px;font-size:15px}
-  button{margin-top:20px;width:100%;padding:11px;border:0;border-radius:8px;background:#1a1a18;color:#fff;
-         font-size:15px;font-weight:600;cursor:pointer}
-  .err{background:#fdecea;border:1px solid #f5c6c0;border-radius:8px;padding:10px 12px;font-size:13px;
-       color:#8a2018;margin-top:16px}
-  .ok{font-size:15px;color:#1c6b30}
-</style></head><body><div class="card">${body}</div></body></html>`;
-var formPage = (token, error2) => page(`<h1>Connect LimoAnywhere</h1>
-<p>Enter the same three things you type at manage.mylimobiz.com. This page is served
-by the Otto AI plugin on this computer \u2014 the login is verified with LimoAnywhere,
-then saved only on this machine. It is not sent to Limo Marketer or into the chat.</p>
-${error2 ? `<div class="err">${escapeHtml2(error2)}</div>` : ""}
-<form method="post">
-  <input type="hidden" name="token" value="${token}">
-  <label for="company_id">Company ID</label>
-  <input id="company_id" name="company_id" autocomplete="organization" required>
-  <label for="username">Username</label>
-  <input id="username" name="username" autocomplete="username" required>
-  <label for="password">Password</label>
-  <input id="password" name="password" type="password" autocomplete="current-password" required>
-  <button type="submit">Verify and connect</button>
-</form>`);
-var successPage = () => page(`<h1>Connected \u2713</h1>
-<p class="ok">LimoAnywhere accepted the login and it's saved on this machine.</p>
-<p>You can close this tab and return to Claude \u2014 the connection is live already;
-no restart needed.</p>`);
-var expiredPage = () => page(`<h1>Link expired</h1>
-<p>This setup link has expired or was already used. Go back to Claude and run
-<strong>/otto-setup</strong> again to get a fresh one.</p>`);
-async function readBody(req) {
-  const chunks = [];
-  let size = 0;
-  for await (const chunk of req) {
-    size += chunk.length;
-    if (size > MAX_BODY_BYTES)
-      throw new Error("request body too large");
-    chunks.push(chunk);
-  }
-  return Buffer.concat(chunks).toString("utf8");
-}
-async function startSetupPage() {
-  closeActivePage();
-  const token = randomBytes2(24).toString("base64url");
-  const tokenOk = (candidate) => !!candidate && candidate.length === token.length && timingSafeEqual(Buffer.from(candidate), Buffer.from(token));
-  const server2 = createServer(async (req, res) => {
-    const send = (status, html, onFlushed) => {
-      res.writeHead(status, {
-        "Content-Type": "text/html; charset=utf-8",
-        "Cache-Control": "no-store",
-        "Referrer-Policy": "no-referrer",
-        "X-Frame-Options": "DENY",
-        "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline'; form-action 'self'"
-      });
-      res.end(html, onFlushed);
-    };
-    try {
-      const url = new URL(req.url ?? "/", "http://127.0.0.1");
-      if (url.pathname !== "/setup")
-        return send(404, expiredPage());
-      if (req.method === "GET") {
-        if (!tokenOk(url.searchParams.get("token")))
-          return send(403, expiredPage());
-        return send(200, formPage(token));
-      }
-      if (req.method === "POST") {
-        const form = new URLSearchParams(await readBody(req));
-        if (!tokenOk(form.get("token")))
-          return send(403, expiredPage());
-        const companyId = (form.get("company_id") ?? "").trim();
-        const username = (form.get("username") ?? "").trim();
-        const password = form.get("password") ?? "";
-        if (!companyId || !username || !password) {
-          return send(400, formPage(token, "All three fields are required."));
-        }
-        const creds = { companyId, username, password };
-        try {
-          invalidateSession(creds);
-          await laLogin(creds);
-        } catch (err) {
-          const reason = err instanceof LaError && err.status === 401 ? "LimoAnywhere rejected that login \u2014 double-check the company ID, username, and password." : "Couldn't verify the login with LimoAnywhere just now \u2014 please try again.";
-          return send(401, formPage(token, reason));
-        }
-        writeCredentialsFile(creds);
-        return send(200, successPage(), () => setImmediate(closeActivePage));
-      }
-      res.writeHead(405, { Allow: "GET, POST" });
-      res.end();
-    } catch {
-      send(500, page("<h1>Something went wrong</h1><p>Return to Claude and try again.</p>"));
-    }
-  });
-  await new Promise((resolve, reject) => {
-    server2.once("error", reject);
-    server2.listen(0, "127.0.0.1", () => resolve());
-  });
-  const timer = setTimeout(closeActivePage, PAGE_TTL_MS);
-  timer.unref();
-  active = { server: server2, timer };
-  const { port } = server2.address();
-  return { url: `http://127.0.0.1:${port}/setup?token=${token}`, expiresMinutes: PAGE_TTL_MS / 6e4 };
 }
 
 // dist/tools/limoanywhere/laConnect.js
@@ -29206,12 +29324,12 @@ var laGetQuoteTool = {
     quote_number: external_exports.string().describe("The quote's Ref # as shown in la_list_quotes, e.g. 97751.")
   },
   logArgs: (args) => ({ quote_number: args.quote_number }),
-  handler: ({ cfg: cfg2 }, args) => {
+  handler: ({ cfg }, args) => {
     const refNumber = String(args.quote_number ?? "").trim().replace(/^#/, "");
     if (!/^\d{3,8}$/.test(refNumber)) {
       return Promise.resolve("Give me the quote's Ref # (a number like 97751) from la_list_quotes.");
     }
-    return runLaTool(cfg2, async (creds) => {
+    return runLaTool(cfg, async (creds) => {
       const row = await findQuoteByNumber(creds, refNumber);
       if (!row) {
         return `No quote request with Ref # ${refNumber} was found among the most recent quotes in LimoAnywhere. Check the number with la_list_quotes \u2014 very old quotes fall outside the scan, and deleted ones don't appear at all.`;
@@ -29407,12 +29525,12 @@ var laGetReservationTool = {
     confirmation_number: external_exports.string().describe("The reservation's Conf #, e.g. 97362.")
   },
   logArgs: (args) => ({ confirmation_number: args.confirmation_number }),
-  handler: ({ cfg: cfg2 }, args) => {
+  handler: ({ cfg }, args) => {
     const conf = String(args.confirmation_number ?? "").trim().replace(/^#/, "");
     if (!/^\d{3,8}$/.test(conf)) {
       return Promise.resolve("Give me the reservation's Conf # (a number like 97362).");
     }
-    return runLaTool(cfg2, async (creds) => {
+    return runLaTool(cfg, async (creds) => {
       const found = await findReservationByConf(creds, conf);
       if (!found) {
         return `No reservation with Conf # ${conf} was found on any LimoAnywhere screen (new, online, unfinalized, or deleted).`;
@@ -29503,13 +29621,13 @@ var laGetScheduleTool = {
   kind: "read",
   inputSchema: { period: periodArg, ...dateRangeArgs },
   logArgs: logRangeArgs,
-  handler: ({ cfg: cfg2 }, args) => {
+  handler: ({ cfg }, args) => {
     const range = resolveRangeArgs(args.period ?? "today", args, {
       allowFuture: true
     });
     if ("error" in range)
       return Promise.resolve(range.error);
-    return runLaTool(cfg2, async (creds) => {
+    return runLaTool(cfg, async (creds) => {
       const trips = await fetchScheduleTrips(creds, range.start, range.end);
       const lines = [];
       lines.push(`## Schedule \u2014 ${range.label} (${fmtDate(range.start)} to ${fmtDate(range.end)})`);
@@ -29555,7 +29673,7 @@ var laListQuotesTool = {
     only_new: external_exports.boolean().optional().describe("true = only quotes nobody has actioned yet.")
   },
   logArgs: (args) => ({ ...logRangeArgs(args), only_new: args.only_new }),
-  handler: ({ cfg: cfg2 }, args) => {
+  handler: ({ cfg }, args) => {
     const range = resolveRangeArgs(args.period ?? "last_7_days", args);
     if ("error" in range)
       return Promise.resolve(range.error);
@@ -29564,7 +29682,7 @@ var laListQuotesTool = {
     if (searchFor && !searchIn) {
       return Promise.resolve("When using search_for, also set search_in to one of: contact_name, passenger_first_name, passenger_last_name, company_name.");
     }
-    return runLaTool(cfg2, async (creds) => {
+    return runLaTool(cfg, async (creds) => {
       const { rows, truncated } = await fetchQuoteRows(creds, {
         searchFor: searchFor || void 0,
         searchIn: searchFor ? searchIn : void 0,
@@ -29624,7 +29742,7 @@ var laListReservationsTool = {
     status: external_exports.string().optional().describe("Optional dispatch-status filter, e.g. Done, Cancelled, Late Cancel, No Show, Assigned, Unassigned.")
   },
   logArgs: (args) => ({ ...logRangeArgs(args), list_from: args.list_from, status: args.status }),
-  handler: ({ cfg: cfg2 }, args) => {
+  handler: ({ cfg }, args) => {
     const range = resolveRangeArgs(args.period ?? "last_7_days", args, {
       allowFuture: true
     });
@@ -29637,7 +29755,7 @@ var laListReservationsTool = {
       return Promise.resolve("When using search_for, also set search_in to one of: contact_name, passenger_first_name, passenger_last_name, company_name, group_name, voucher_number.");
     }
     const statusFilter = typeof args.status === "string" ? args.status.trim().toLowerCase() : "";
-    return runLaTool(cfg2, async (creds) => {
+    return runLaTool(cfg, async (creds) => {
       const { rows, truncated } = await fetchReservationRows(creds, {
         tab,
         searchFor: searchFor || void 0,
@@ -29700,11 +29818,11 @@ var laQuoteConversionReportTool = {
   kind: "read",
   inputSchema: { period: periodArg, ...dateRangeArgs },
   logArgs: logRangeArgs,
-  handler: ({ cfg: cfg2 }, args) => {
+  handler: ({ cfg }, args) => {
     const range = resolveRangeArgs(args.period ?? "last_7_days", args);
     if ("error" in range)
       return Promise.resolve(range.error);
-    return runLaTool(cfg2, async (creds) => {
+    return runLaTool(cfg, async (creds) => {
       const { rows: quoteRows, truncated: quotesTruncated } = await fetchQuoteRows(creds, {
         dateFrom: range.start,
         dateTo: range.end
@@ -29774,13 +29892,13 @@ var laRevenueSummaryTool = {
   kind: "read",
   inputSchema: { period: periodArg, ...dateRangeArgs },
   logArgs: logRangeArgs,
-  handler: ({ cfg: cfg2 }, args) => {
+  handler: ({ cfg }, args) => {
     const range = resolveRangeArgs(args.period ?? "this_month", args, {
       allowFuture: true
     });
     if ("error" in range)
       return Promise.resolve(range.error);
-    return runLaTool(cfg2, async (creds) => {
+    return runLaTool(cfg, async (creds) => {
       const { rows, truncated } = await fetchReservationRows(creds, {
         dateFrom: range.start,
         dateTo: range.end
@@ -29893,17 +30011,17 @@ var DEFAULT_INSTRUCTIONS = [
   "operator and get explicit approval for; only then call confirm_action \u2014",
   "never in the same turn."
 ].join(" ");
-function buildMcpServer(cfg2, onToolCall, gate, opts = {}) {
-  const server2 = new McpServer({
+function buildMcpServer(cfg, onToolCall, gate, opts = {}) {
+  const server = new McpServer({
     name: opts.name ?? "otto-ai-mcp",
     title: opts.title ?? "Otto AI",
     version: "0.1.0"
   }, {
     instructions: opts.instructions ?? DEFAULT_INSTRUCTIONS
   });
-  const deps = { cfg: cfg2, gate };
+  const deps = { cfg, gate };
   for (const tool of opts.tools ?? GHL_TOOLS) {
-    server2.registerTool(tool.name, { title: tool.title, description: tool.description, inputSchema: tool.inputSchema }, async (rawArgs) => {
+    server.registerTool(tool.name, { title: tool.title, description: tool.description, inputSchema: tool.inputSchema }, async (rawArgs) => {
       const args = rawArgs ?? {};
       const logged = tool.logArgs?.(args);
       const startedAt = Date.now();
@@ -29925,7 +30043,7 @@ function buildMcpServer(cfg2, onToolCall, gate, opts = {}) {
       }
     });
   }
-  return server2;
+  return server;
 }
 
 // dist/laServer.js
@@ -29946,23 +30064,29 @@ var LA_INSTRUCTIONS = [
   "settlements are not netted out, and cancelled or no-show trips are reported",
   "separately from booked revenue."
 ].join(" ");
-var base = tenantFromEnv();
-var cfg = {
-  mode: "stdio",
-  locationId: void 0,
-  apiBase: base.apiBase,
-  // A getter, not a snapshot: the credentials file is re-read on each lookup
-  // so la_connect takes effect immediately on the running server.
-  get la() {
-    return base.la ?? readCredentialsFile();
-  },
-  envFile: base.envFile,
-  setupHint: SETUP_HINT
-};
-var server = buildMcpServer(cfg, void 0, void 0, {
-  tools: [...LA_TOOLS, ...LA_SETUP_TOOLS],
-  name: "otto-limoanywhere",
-  title: "Otto AI by Limo Marketer",
-  instructions: LA_INSTRUCTIONS
-});
-await server.connect(new StdioServerTransport());
+if (process.argv.includes(SETUP_LAUNCHER_FLAG)) {
+  runSetupLauncher();
+} else if (process.argv.includes(SETUP_HELPER_FLAG)) {
+  await runSetupHelper();
+} else {
+  const base = tenantFromEnv();
+  const cfg = {
+    mode: "stdio",
+    locationId: void 0,
+    apiBase: base.apiBase,
+    // A getter, not a snapshot: the credentials file is re-read on each lookup
+    // so la_connect takes effect immediately on the running server.
+    get la() {
+      return base.la ?? readCredentialsFile();
+    },
+    envFile: base.envFile,
+    setupHint: SETUP_HINT
+  };
+  const server = buildMcpServer(cfg, void 0, void 0, {
+    tools: [...LA_TOOLS, ...LA_SETUP_TOOLS],
+    name: "otto-limoanywhere",
+    title: "Otto AI by Limo Marketer",
+    instructions: LA_INSTRUCTIONS
+  });
+  await server.connect(new StdioServerTransport());
+}
