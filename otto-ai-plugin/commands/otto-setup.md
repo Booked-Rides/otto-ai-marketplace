@@ -32,13 +32,27 @@ Do this:
    - If both are present, say nothing about the preflight and move on.
    - **Windows caveat:** on Windows this shell is a Linux sandbox, so the
      check above reflects the sandbox, not the operator's machine. If the
-     `la_*` tools are missing from this session on Windows even though Node
-     is installed, the usual cause is that the desktop app spawns servers
-     with a minimal *system* PATH that lacks `C:\Program Files\nodejs`. Tell
-     the operator: open `%LOCALAPPDATA%\Claude\logs\main.log`, find the
-     `Using MCP server command: node with path:` line, and if no Node
-     directory is listed, add `C:\Program Files\nodejs` to the **system**
-     PATH, then fully exit Claude Desktop (tray icon → Exit) and relaunch.
+     `la_*` tools are missing from this session on Windows, walk the operator
+     through this, one step at a time, in plain language:
+
+     1. "Do you remember installing Node.js on this computer?" If not (or
+        unsure): go to **nodejs.org**, download it, click **Next** through
+        every step of the installer without changing anything, **restart the
+        computer**, and open Claude Desktop again. The standard installer
+        sets everything up; the restart is what makes it take effect.
+     2. If Node is already installed and it still doesn't work: have them
+        open **PowerShell** (press the Windows key, type "powershell", press
+        Enter) and paste this one line, exactly as written, then press Enter:
+
+        ```powershell
+        [Environment]::SetEnvironmentVariable("Path", [Environment]::GetEnvironmentVariable("Path","User") + ";C:\Program Files\nodejs", "User")
+        ```
+
+        Then right-click the Claude icon in the system tray (bottom-right,
+        near the clock), choose **Exit**, and reopen Claude Desktop.
+     3. Only if both fail, collect diagnostics for support: the
+        `Using MCP server command: node with path:` line from
+        `%LOCALAPPDATA%\Claude\logs\main.log`.
 
 1. Recommend the operator create a **dedicated view-only "Otto AI" user** in
    LimoAnywhere rather than sharing their admin login. It limits what this

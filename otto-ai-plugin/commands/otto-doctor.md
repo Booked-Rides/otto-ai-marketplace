@@ -22,11 +22,11 @@ internally.
    **Windows:** this shell is a Linux sandbox, so the check reflects the
    sandbox, not the operator's machine — a passing check does NOT prove the
    host can spawn the connector. If the `la_*` tools are absent on Windows,
-   have the operator check `%LOCALAPPDATA%\Claude\logs\main.log` for the
-   `Using MCP server command: node with path:` line; if no Node directory
-   appears in that list, the fix is adding `C:\Program Files\nodejs` to the
-   **system** PATH, then fully exiting Claude Desktop (tray icon → Exit) and
-   relaunching.
+   don't diagnose PATHs at the operator; give them the two-step fix from
+   `/otto-setup`'s preflight (install Node from nodejs.org and restart the
+   computer; if already installed, the one-line PowerShell paste there), and
+   only collect `%LOCALAPPDATA%\Claude\logs\main.log` diagnostics if both
+   steps fail.
 
 2. Run **`la_check_connection`** — the local LimoAnywhere side. It verifies
    the saved login works and that quotes and the trip calendar can be read.

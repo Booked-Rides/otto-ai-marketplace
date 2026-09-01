@@ -22002,8 +22002,8 @@ async function sbPatch(db, table, query, patch) {
 }
 
 // dist/ghl/marketplaceVault.js
-var LOCATIONS_TABLE = "miles_ghl_tokens";
-var COMPANY_TABLE = "miles_ghl_company_tokens";
+var LOCATIONS_TABLE = "otto_ghl_tokens";
+var COMPANY_TABLE = "otto_ghl_company_tokens";
 var EXPIRY_MARGIN_MS = 2 * 60 * 1e3;
 async function ghlTokenRequest(apiBase, app, grant) {
   const res = await fetch(`${apiBase}/oauth/token`, {
@@ -22141,11 +22141,11 @@ async function resolveGhlToken(cfg) {
   if (cfg.marketplace && cfg.vault && cfg.locationId) {
     const cached3 = cache.get(cfg.locationId);
     if (cached3 && cached3.expiresAtMs - Date.now() > 2 * 60 * 1e3) {
-      return { source: "miles-vault", token: cached3.token, expiresAtMs: cached3.expiresAtMs };
+      return { source: "otto-vault", token: cached3.token, expiresAtMs: cached3.expiresAtMs };
     }
     const { token, expiresAtMs: expiresAtMs2 } = await resolveMarketplaceToken({ url: cfg.vault.url, serviceKey: cfg.vault.key }, cfg.apiBase, cfg.marketplace, cfg.locationId);
     storeInCache(cfg.locationId, token, expiresAtMs2);
-    return { source: "miles-vault", token, expiresAtMs: expiresAtMs2 };
+    return { source: "otto-vault", token, expiresAtMs: expiresAtMs2 };
   }
   if (cfg.ghlPit)
     return { source: "pit", token: cfg.ghlPit };
@@ -22439,7 +22439,7 @@ function sha256Hex(value) {
   return createHash("sha256").update(value).digest("hex");
 }
 function newCode() {
-  let code = "MILES-";
+  let code = "OTTO-";
   for (let i = 0; i < 6; i++)
     code += CODE_ALPHABET[randomInt(CODE_ALPHABET.length)];
   return code;
@@ -22611,7 +22611,7 @@ var confirmActionTool = {
   description: "Executes a previously prepared action (message send, tag change, note, opportunity update) using its one-time confirmation code. ONLY call this after the human operator has seen the preview and explicitly approved \u2014 never in the same turn as a prepare tool. Codes are single-use and expire in 10 minutes.",
   kind: "write",
   inputSchema: {
-    code: external_exports.string().describe("The MILES- confirmation code from the prepare step.")
+    code: external_exports.string().describe("The OTTO- confirmation code from the prepare step.")
   },
   logArgs: () => ({}),
   handler: async ({ cfg, gate }, args) => {
@@ -22619,7 +22619,7 @@ var confirmActionTool = {
       return NO_WRITES_MESSAGE;
     const code = String(args.code ?? "").trim();
     if (!code)
-      return "Give me the MILES- confirmation code from the prepare step.";
+      return "Give me the OTTO- confirmation code from the prepare step.";
     return confirmPendingAction(gate, cfg, code);
   }
 };
@@ -22629,7 +22629,7 @@ var cancelActionTool = {
   description: "Cancels a previously prepared action so its confirmation code can never be used. Call this when the operator declines or changes their mind.",
   kind: "write",
   inputSchema: {
-    code: external_exports.string().describe("The MILES- confirmation code to void.")
+    code: external_exports.string().describe("The OTTO- confirmation code to void.")
   },
   logArgs: () => ({}),
   handler: async ({ gate }, args) => {
@@ -22637,7 +22637,7 @@ var cancelActionTool = {
       return NO_WRITES_MESSAGE;
     const code = String(args.code ?? "").trim().toUpperCase();
     if (!code)
-      return "Give me the MILES- confirmation code to cancel.";
+      return "Give me the OTTO- confirmation code to cancel.";
     const ok = await gate.store.cancel(sha256Hex(code), gate.actor);
     return ok ? "Cancelled \u2014 that action will not run, and its code is now void." : "Nothing to cancel \u2014 that code isn't pending (it may have been used, already cancelled, or mistyped).";
   }
@@ -24859,7 +24859,7 @@ function unseal(sealed, keyB64) {
 }
 
 // dist/db/laCredentials.js
-var TABLE = "miles_la_credentials";
+var TABLE = "otto_la_credentials";
 var SELECT = "select=ghl_location_id,la_company_id,la_username,la_password_enc,status,verified_at";
 var CACHE_TTL_MS = 6e4;
 var cache2 = /* @__PURE__ */ new Map();
