@@ -151,7 +151,8 @@ commit until something refreshes it. Three ways an update actually lands:
 `miles-ai@otto-ai`) have no update path at all — the name no longer exists in
 the marketplace. One-time fix: uninstall the old plugin, reinstall **Otto AI
 by Limo Marketer** from the marketplace. The saved LimoAnywhere login
-survives (the server reads the legacy credentials path).
+survives (the server reads every previous install variant's credentials
+path and migrates the login to the current one on first use).
 
 ## 7. Optional: the GoHighLevel connector
 
@@ -213,7 +214,7 @@ will include it in its report whenever it's present.
 | Upload rejected: "path with invalid characters" | The zip contains `node_modules` (or other `@`-prefixed paths) from an old build. Re-run `npm run plugin:build` and re-zip. |
 | `otto-limoanywhere` fails to start (macOS) | Most likely no `node` on the machine's PATH. |
 | `otto-limoanywhere` fails with CONNECTION_CLOSED (Windows) | Node is missing from the PATH **the desktop host uses to spawn servers** — not the same PATH as your terminal's, so `node --version` succeeding proves nothing. Operator-facing fix (scripted into `/otto-setup`): the single `winget` PowerShell paste (installs Node LTS + Git; the MSI sets the system PATH) followed by a computer restart handles most machines; nodejs.org clicked through with defaults is the no-winget fallback; otherwise the one-line PowerShell paste in `/otto-setup` adds `C:\Program Files\nodejs` to the *user* PATH (no admin needed — the host's sanitized PATH was observed to include user-PATH entries). To confirm the diagnosis: the `Using MCP server command: node with path:` line in `%LOCALAPPDATA%\Claude\logs\main.log`. |
-| LA tools say "isn't connected yet" | Run `/otto-setup` — its `la_connect_start` page verifies and saves the login, live immediately. If it claims success but tools still say this, check the file exists at `~/.claude/plugins/data/otto-ai-plugin/la-credentials.json` — the server's default. (Cowork does not expand `${CLAUDE_PLUGIN_DATA}` in the connector's `MILES_LA_CONFIG`, so the env var is ignored unless it's a real path.) |
+| LA tools say "isn't connected yet" | Run `/otto-setup` — its `la_connect_start` page verifies and saves the login, live immediately. The "isn't connected" message itself names the exact path this install reads — start there. Since v0.7.0 the server also reads (and self-heals from) every sibling install-variant path under `~/.claude/plugins/data/` — `otto-ai-plugin`, `otto-ai-plugin-inline` (zip uploads), and the pre-rename `miles-ai`/`miles-ai-inline` — newest file first, so a plugin update or reinstall can no longer strand a saved login (`${CLAUDE_PLUGIN_DATA}` moves with the install variant on hosts that expand it, and is ignored when passed through unexpanded). |
 | LA says the login was rejected | Wrong credentials, a changed password, or a user without permission for the quotes and calendar screens. |
 
 ---

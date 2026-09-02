@@ -13445,12 +13445,18 @@ function tenantFromEnv() {
 }
 
 // dist/la/credentialsFile.js
-import { chmodSync, existsSync as existsSync2, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { chmodSync, existsSync as existsSync2, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import path2 from "node:path";
-var dataPath = (pluginName) => path2.join(homedir(), ".claude", "plugins", "data", pluginName, "la-credentials.json");
+var DATA_ROOT = path2.join(homedir(), ".claude", "plugins", "data");
+var dataPath = (pluginName) => path2.join(DATA_ROOT, pluginName, "la-credentials.json");
 var DEFAULT_PATH = dataPath("otto-ai-plugin");
-var LEGACY_PATH = dataPath("miles-ai");
+var KNOWN_PATHS = [
+  DEFAULT_PATH,
+  dataPath("otto-ai-plugin-inline"),
+  dataPath("miles-ai"),
+  dataPath("miles-ai-inline")
+];
 var explicitEnvPath = () => {
   const fromEnv = process.env.MILES_LA_CONFIG?.trim();
   return fromEnv && !fromEnv.includes("${") ? fromEnv : void 0;
@@ -13458,12 +13464,7 @@ var explicitEnvPath = () => {
 function credentialsFilePath() {
   return explicitEnvPath() ?? DEFAULT_PATH;
 }
-function readCredentialsFile() {
-  const explicit = explicitEnvPath();
-  const candidates = explicit ? [explicit] : [DEFAULT_PATH, LEGACY_PATH];
-  const file = candidates.find((p) => existsSync2(p));
-  if (!file)
-    return void 0;
+function parseCredsFile(file) {
   try {
     const raw = JSON.parse(readFileSync(file, "utf8"));
     const companyId = String(raw.companyId ?? "").trim();
@@ -13475,6 +13476,31 @@ function readCredentialsFile() {
   } catch {
     return void 0;
   }
+}
+function readCredentialsFile() {
+  const target = credentialsFilePath();
+  const fallbackEligible = target.startsWith(DATA_ROOT + path2.sep);
+  const candidates = fallbackEligible ? [.../* @__PURE__ */ new Set([target, ...KNOWN_PATHS])] : [target];
+  const byRecency = candidates.filter((p) => existsSync2(p)).map((p) => {
+    try {
+      return { file: p, mtimeMs: statSync(p).mtimeMs };
+    } catch {
+      return void 0;
+    }
+  }).filter((c) => c !== void 0).sort((a, b) => b.mtimeMs - a.mtimeMs);
+  for (const { file } of byRecency) {
+    const creds = parseCredsFile(file);
+    if (!creds)
+      continue;
+    if (file !== target) {
+      try {
+        writeCredentialsFile(creds);
+      } catch {
+      }
+    }
+    return creds;
+  }
+  return void 0;
 }
 function writeCredentialsFile(creds) {
   const file = credentialsFilePath();
@@ -30047,7 +30073,7 @@ function buildMcpServer(cfg, onToolCall, gate, opts = {}) {
 }
 
 // dist/laServer.js
-var SETUP_HINT = "LimoAnywhere isn't connected yet. Run the /otto-setup command \u2014 or call la_connect_start \u2014 to get a one-time link to a setup page on this machine, where the operator types their manage.mylimobiz.com login (company ID, username, password) into a normal browser form; the password never appears in this conversation. Recommend a dedicated view-only LimoAnywhere user rather than an admin login. The login is verified, then saved only on this machine.";
+var SETUP_HINT = `LimoAnywhere isn't connected yet. Run the /otto-setup command \u2014 or call la_connect_start \u2014 to get a one-time link to a setup page on this machine, where the operator types their manage.mylimobiz.com login (company ID, username, password) into a normal browser form; the password never appears in this conversation. Recommend a dedicated view-only LimoAnywhere user rather than an admin login. The login is verified, then saved only on this machine. (For support: no saved login was found; this install keeps it at ${credentialsFilePath()}.)`;
 var LA_INSTRUCTIONS = [
   "These tools read a limo operator's LimoAnywhere back office (reservations,",
   "quotes, and the trip calendar). They are STRICTLY READ-ONLY \u2014 nothing here",
