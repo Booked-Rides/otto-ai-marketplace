@@ -9,24 +9,33 @@ internally.
 1. Check the machine itself. Run in the shell:
 
    ```bash
-   node --version; git --version
+   node --version; git --version; uname -s
    ```
 
-   Node.js is what the local LimoAnywhere connector runs on — if it's missing,
-   that alone explains any absent `la_*` tools: report that the operator needs
-   to install Node.js LTS from https://nodejs.org, then fully quit and reopen
-   Claude Desktop. Git missing means marketplace plugin updates won't arrive
-   (macOS: `xcode-select --install`; Windows: https://git-scm.com). If both
+   Node.js is what the local LimoAnywhere connector runs on. If anything is
+   missing, **fix it for the operator** instead of pointing them at a
+   website — the full playbook is `/otto-setup`'s preflight (step 0); follow
+   it from here. In short: on a Mac, install Node in this chat (`brew install
+   node` if Homebrew exists, else the nvm two-liner) and have them fully quit
+   and reopen Claude Desktop; on Windows, give them the single `winget`
+   PowerShell paste that installs Node and Git together, then a computer
+   restart. Git missing on a Mac: `brew install git`, or run
+   `xcode-select --install` and tell them to click Install in the popup —
+   updates won't arrive without it, but today's session still works. If both
    are present, just include "machine setup: OK" in the report.
+
+   **If the `la_*` tools are absent from this session entirely**, check the
+   causes in `/otto-setup` step 0-A **in order**: first that Cowork is running
+   this task locally (Settings → Cowork → "Run new tasks in the cloud" must
+   be OFF; org admins control it on Team/Enterprise — the connector can never
+   appear in a cloud task), then missing Node.
 
    **Windows:** this shell is a Linux sandbox, so the check reflects the
    sandbox, not the operator's machine — a passing check does NOT prove the
    host can spawn the connector. If the `la_*` tools are absent on Windows,
-   don't diagnose PATHs at the operator; give them the two-step fix from
-   `/otto-setup`'s preflight (install Node from nodejs.org and restart the
-   computer; if already installed, the one-line PowerShell paste there), and
-   only collect `%LOCALAPPDATA%\Claude\logs\main.log` diagnostics if both
-   steps fail.
+   don't diagnose PATHs at the operator; use `/otto-setup`'s escalation path
+   (winget paste + restart; then the PATH one-liner), and only collect
+   `%LOCALAPPDATA%\Claude\logs\main.log` diagnostics if those fail.
 
 2. Run **`la_check_connection`** — the local LimoAnywhere side. It verifies
    the saved login works and that quotes and the trip calendar can be read.
@@ -39,9 +48,10 @@ internally.
 Then summarize as a short status, one line per system, and give **one** clear
 next step if anything is broken. Common cases:
 
-- *The `la_*` tools aren't in this session at all* → almost always Node.js
-  missing (the step-1 check confirms it). Install Node.js LTS, then fully
-  quit and reopen Claude Desktop.
+- *The `la_*` tools aren't in this session at all* → either Cowork ran this
+  task in the cloud (fix the "Run new tasks in the cloud" setting, restart,
+  new task) or Node.js is missing on the machine (install it for them per
+  `/otto-setup` step 0, then fully quit and reopen Claude Desktop).
 - *LimoAnywhere says it isn't connected* → run `/otto-setup`.
 - *Something that was supposedly fixed is still broken* → the plugin may be
   stale; auto-update is off by default for this marketplace. Run

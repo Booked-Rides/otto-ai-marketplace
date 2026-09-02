@@ -21,10 +21,10 @@ can use the plugin with or without it.
 
 | Requirement | Notes |
 |---|---|
-| **Node.js 18+** | `node --version`. Needed to build, and the installed plugin currently uses the machine's `node` (Cowork launches the server on the host with the PATH's node). Without it the `otto-limoanywhere` connector cannot start at all. |
-| **Git** | `git --version`. Cowork installs and updates marketplace plugins via git — without it the marketplace add fails and updates never arrive. macOS: `xcode-select --install`; Windows: git-scm.com. |
+| **Node.js 18+** | `node --version`. Needed to build, and the installed plugin currently uses the machine's `node` (Cowork launches the server on the host with the PATH's node). Without it the `otto-limoanywhere` connector cannot start at all. **Clients don't install this themselves:** `/otto-setup`'s preflight installs it for them — in-chat on macOS (Homebrew or nvm, no admin password), a single `winget` PowerShell paste on Windows (the chat's shell there is a sandbox and can't touch the host). |
+| **Git** | `git --version`. Cowork installs and updates marketplace plugins via git — without it the marketplace add fails and updates never arrive. `/otto-setup` fixes this too: macOS `brew install git` or `xcode-select --install` triggered from the chat; on Windows it's bundled into the same `winget` paste as Node. |
 | **Claude Cowork** | Any paid plan (Pro, Max, Team, Enterprise). Cowork is not available on Free. |
-| **Cowork must run LOCALLY** | The bundled LimoAnywhere server cannot run in cloud sessions — skills appear but the `la_*` tools don't. Personal (Pro/Max) accounts: Claude Desktop → Settings → Cowork → turn **off** "Run new tasks in the cloud", then fully restart the app. Team/Enterprise: an org admin sets execution mode under Organization Settings → Cowork. |
+| **Cowork must run LOCALLY** | **Set this at install time, before anything else.** The bundled LimoAnywhere server cannot run in cloud sessions — skills appear but the `la_*` tools don't. Personal (Pro/Max) accounts: Claude Desktop → Settings → Cowork → turn **off** "Run new tasks in the cloud", then fully restart the app. Team/Enterprise: an org admin sets execution mode under Organization Settings → Cowork. This is a Claude app setting — the plugin cannot set it programmatically, but `/otto-setup` and `/otto-doctor` detect the cloud-session symptom and walk the operator through flipping it. |
 | **Latest Claude Desktop** | Cowork requires it. |
 | **Windows only:** Virtual Machine Platform enabled | Cowork's requirement. |
 | **A LimoAnywhere login** | Company ID, username, password — the three fields from the manage.mylimobiz.com form. **Use a dedicated view-only "Otto AI" user**, not an admin login. |
@@ -88,7 +88,7 @@ After installing, open the plugin. You should see:
 
 - **Skill:** `limoanywhere`
 - **Connector:** `otto-limoanywhere` (local)
-- **Commands:** `/otto-setup`, `/otto-doctor`
+- **Commands:** `/otto-setup`, `/otto-doctor`, `/otto-update`
 
 ---
 
@@ -212,7 +212,7 @@ will include it in its report whenever it's present.
 | Plugin installs but shows no connector | Check `plugins/otto-ai-plugin/server/laServer.mjs` exists. If not, the build didn't finish. |
 | Upload rejected: "path with invalid characters" | The zip contains `node_modules` (or other `@`-prefixed paths) from an old build. Re-run `npm run plugin:build` and re-zip. |
 | `otto-limoanywhere` fails to start (macOS) | Most likely no `node` on the machine's PATH. |
-| `otto-limoanywhere` fails with CONNECTION_CLOSED (Windows) | Node is missing from the PATH **the desktop host uses to spawn servers** — not the same PATH as your terminal's, so `node --version` succeeding proves nothing. Operator-facing fix (scripted into `/otto-setup`): a fresh install from nodejs.org followed by a computer restart handles most machines (the MSI sets the PATH itself); otherwise the one-line PowerShell paste in `/otto-setup` adds `C:\Program Files\nodejs` to the *user* PATH (no admin needed — the host's sanitized PATH was observed to include user-PATH entries). To confirm the diagnosis: the `Using MCP server command: node with path:` line in `%LOCALAPPDATA%\Claude\logs\main.log`. |
+| `otto-limoanywhere` fails with CONNECTION_CLOSED (Windows) | Node is missing from the PATH **the desktop host uses to spawn servers** — not the same PATH as your terminal's, so `node --version` succeeding proves nothing. Operator-facing fix (scripted into `/otto-setup`): the single `winget` PowerShell paste (installs Node LTS + Git; the MSI sets the system PATH) followed by a computer restart handles most machines; nodejs.org clicked through with defaults is the no-winget fallback; otherwise the one-line PowerShell paste in `/otto-setup` adds `C:\Program Files\nodejs` to the *user* PATH (no admin needed — the host's sanitized PATH was observed to include user-PATH entries). To confirm the diagnosis: the `Using MCP server command: node with path:` line in `%LOCALAPPDATA%\Claude\logs\main.log`. |
 | LA tools say "isn't connected yet" | Run `/otto-setup` — its `la_connect_start` page verifies and saves the login, live immediately. If it claims success but tools still say this, check the file exists at `~/.claude/plugins/data/otto-ai-plugin/la-credentials.json` — the server's default. (Cowork does not expand `${CLAUDE_PLUGIN_DATA}` in the connector's `MILES_LA_CONFIG`, so the env var is ignored unless it's a real path.) |
 | LA says the login was rejected | Wrong credentials, a changed password, or a user without permission for the quotes and calendar screens. |
 

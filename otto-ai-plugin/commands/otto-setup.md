@@ -11,48 +11,95 @@ Limo Marketer.
 
 Do this:
 
-0. **Preflight — check the machine first.** Run this in the shell:
+0. **Preflight — check the machine, and fix it yourself where you can.** The
+   operator is not technical: never send them off to "go install Node" alone.
+   On a Mac you can install what's missing right here in the chat; on Windows
+   the fix is a single line they paste. Run this in the shell:
 
    ```bash
-   node --version; git --version
+   node --version; git --version; uname -s
    ```
 
-   - **If `node` is missing**, stop here — the LimoAnywhere connector runs on
-     Node.js and cannot start without it, which is also why the `la_*` tools
-     may be absent from this session. Tell the operator, in plain language, to
-     install Node.js LTS from https://nodejs.org (the standard installer for
-     their system; on a Mac, `brew install node` also works if they use
-     Homebrew), then **fully quit and reopen Claude Desktop** and run
-     `/otto-setup` again. Don't attempt the remaining steps until node is
-     present.
-   - **If `git` is missing**, the plugin can still run, but it won't receive
-     updates from the marketplace. Recommend installing it — on a Mac, running
-     `xcode-select --install` in Terminal; on Windows, the installer from
-     https://git-scm.com — but continue with setup either way.
-   - If both are present, say nothing about the preflight and move on.
-   - **Windows caveat:** on Windows this shell is a Linux sandbox, so the
-     check above reflects the sandbox, not the operator's machine. If the
-     `la_*` tools are missing from this session on Windows, walk the operator
-     through this, one step at a time, in plain language:
+   Then work through whichever of these applies (if node, git, and the
+   `la_*` tools are all present, say nothing about the preflight and move on):
 
-     1. "Do you remember installing Node.js on this computer?" If not (or
-        unsure): go to **nodejs.org**, download it, click **Next** through
-        every step of the installer without changing anything, **restart the
-        computer**, and open Claude Desktop again. The standard installer
-        sets everything up; the restart is what makes it take effect.
-     2. If Node is already installed and it still doesn't work: have them
-        open **PowerShell** (press the Windows key, type "powershell", press
-        Enter) and paste this one line, exactly as written, then press Enter:
+   **A. The `la_*` tools are missing from this session entirely.** Two
+   possible causes — rule them out in this order:
 
-        ```powershell
-        [Environment]::SetEnvironmentVariable("Path", [Environment]::GetEnvironmentVariable("Path","User") + ";C:\Program Files\nodejs", "User")
-        ```
+   1. **Cowork is running this task in the cloud.** The LimoAnywhere
+      connector exists only on the operator's machine, so cloud tasks can't
+      see it (the skill and this command still appear — that's the telltale
+      combination). A giveaway: `uname` says `Linux` but the operator is on a
+      Mac. This is a Claude setting — it cannot be changed from this chat, so
+      walk them through it:
+      - Personal plans (Pro/Max): Claude Desktop → **Settings → Cowork** →
+        turn **off** "Run new tasks in the cloud" → fully quit Claude
+        (Cmd+Q on Mac; tray icon → Exit on Windows) → reopen, start a **new**
+        task, and run `/otto-setup` again.
+      - Team/Enterprise: an org admin must set local execution under
+        **Organization Settings → Cowork**; the operator can't change it
+        themselves.
+   2. **Node.js is missing on the machine** — see B (Mac) or C (Windows).
 
-        Then right-click the Claude icon in the system tray (bottom-right,
-        near the clock), choose **Exit**, and reopen Claude Desktop.
-     3. Only if both fail, collect diagnostics for support: the
-        `Using MCP server command: node with path:` line from
-        `%LOCALAPPDATA%\Claude\logs\main.log`.
+   **B. Mac (`uname` says `Darwin`) and `node` is missing.** The shell runs
+   on this machine, so install it for them. Say: "Node.js is missing — it's
+   the engine the LimoAnywhere connection runs on. I can install it for you
+   right now; it takes a couple of minutes." On their okay:
+
+   - If Homebrew is present (`command -v brew`): `brew install node`.
+   - Otherwise, no admin password needed:
+
+     ```bash
+     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+     export NVM_DIR="$HOME/.nvm" && . "$NVM_DIR/nvm.sh" && nvm install --lts
+     ```
+
+   Confirm with `node --version`, then have them **fully quit (Cmd+Q) and
+   reopen Claude Desktop** and run `/otto-setup` again — the connector only
+   sees the new Node on a fresh start.
+
+   **C. Windows.** This shell is a Linux sandbox: its `node`/`git` say nothing
+   about the operator's actual computer, and you cannot install anything on
+   the host from here. If the `la_*` tools are missing (and A.1 is ruled
+   out), give them ONE thing to paste — don't send them to download pages.
+   Have them open **PowerShell** (press the Windows key, type "powershell",
+   press Enter), paste this single line exactly, and press Enter:
+
+   ```powershell
+   winget install -e --id OpenJS.NodeJS.LTS --accept-package-agreements --accept-source-agreements; winget install -e --id Git.Git --accept-package-agreements --accept-source-agreements
+   ```
+
+   Tell them what it does in plain language: it installs Node.js and Git
+   using Windows' built-in installer; if a "Do you want to allow this app to
+   make changes?" box pops up, click **Yes**. When it finishes, **restart the
+   computer** and open Claude Desktop again — the restart is what makes it
+   take effect. Escalation path if that doesn't get them there:
+
+   1. If PowerShell says `winget` isn't recognized (older machines): go to
+      **nodejs.org**, download it, click **Next** through every step without
+      changing anything, restart the computer, reopen Claude Desktop.
+   2. If Node is installed but the connector still won't start: paste this
+      one line in PowerShell, exactly as written:
+
+      ```powershell
+      [Environment]::SetEnvironmentVariable("Path", [Environment]::GetEnvironmentVariable("Path","User") + ";C:\Program Files\nodejs", "User")
+      ```
+
+      Then right-click the Claude icon in the system tray (bottom-right,
+      near the clock), choose **Exit**, and reopen Claude Desktop.
+   3. Only if all of that fails, collect diagnostics for support: the
+      `Using MCP server command: node with path:` line from
+      `%LOCALAPPDATA%\Claude\logs\main.log`.
+
+   **D. `git` is missing but node works.** The plugin runs, but marketplace
+   updates won't arrive. Fix it now rather than recommending a website:
+   - Mac with Homebrew: `brew install git`.
+   - Mac without Homebrew: run `xcode-select --install` in the shell — a
+     popup appears on their screen; tell them to click **Install** and wait
+     for it to finish.
+   - Windows: it's already included in the PowerShell paste in C.
+   Continue with setup either way — git is not required for today's
+   connection, only for updates.
 
 1. Recommend the operator create a **dedicated view-only "Otto AI" user** in
    LimoAnywhere rather than sharing their admin login. It limits what this
