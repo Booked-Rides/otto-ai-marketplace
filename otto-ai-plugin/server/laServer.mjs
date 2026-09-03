@@ -111,7 +111,7 @@ var require_package = __commonJS({
 var require_main = __commonJS({
   "node_modules/dotenv/lib/main.js"(exports, module) {
     var fs = __require("fs");
-    var path4 = __require("path");
+    var path5 = __require("path");
     var os = __require("os");
     var crypto = __require("crypto");
     var packageJson = require_package();
@@ -227,7 +227,7 @@ var require_main = __commonJS({
           possibleVaultPath = options.path.endsWith(".vault") ? options.path : `${options.path}.vault`;
         }
       } else {
-        possibleVaultPath = path4.resolve(process.cwd(), ".env.vault");
+        possibleVaultPath = path5.resolve(process.cwd(), ".env.vault");
       }
       if (fs.existsSync(possibleVaultPath)) {
         return possibleVaultPath;
@@ -235,7 +235,7 @@ var require_main = __commonJS({
       return null;
     }
     function _resolveHome(envPath2) {
-      return envPath2[0] === "~" ? path4.join(os.homedir(), envPath2.slice(1)) : envPath2;
+      return envPath2[0] === "~" ? path5.join(os.homedir(), envPath2.slice(1)) : envPath2;
     }
     function _configVault(options) {
       const debug = Boolean(options && options.debug);
@@ -252,7 +252,7 @@ var require_main = __commonJS({
       return { parsed };
     }
     function configDotenv(options) {
-      const dotenvPath = path4.resolve(process.cwd(), ".env");
+      const dotenvPath = path5.resolve(process.cwd(), ".env");
       let encoding = "utf8";
       const debug = Boolean(options && options.debug);
       const quiet = options && "quiet" in options ? options.quiet : true;
@@ -276,13 +276,13 @@ var require_main = __commonJS({
       }
       let lastError;
       const parsedAll = {};
-      for (const path5 of optionPaths) {
+      for (const path6 of optionPaths) {
         try {
-          const parsed = DotenvModule.parse(fs.readFileSync(path5, { encoding }));
+          const parsed = DotenvModule.parse(fs.readFileSync(path6, { encoding }));
           DotenvModule.populate(parsedAll, parsed, options);
         } catch (e) {
           if (debug) {
-            _debug(`Failed to load ${path5} ${e.message}`);
+            _debug(`Failed to load ${path6} ${e.message}`);
           }
           lastError = e;
         }
@@ -297,7 +297,7 @@ var require_main = __commonJS({
         const shortPaths = [];
         for (const filePath of optionPaths) {
           try {
-            const relative = path4.relative(process.cwd(), filePath);
+            const relative = path5.relative(process.cwd(), filePath);
             shortPaths.push(relative);
           } catch (e) {
             if (debug) {
@@ -3593,8 +3593,8 @@ var require_utils = __commonJS({
       }
       return ind;
     }
-    function removeDotSegments(path4) {
-      let input = path4;
+    function removeDotSegments(path5) {
+      let input = path5;
       const output = [];
       let nextSlash = -1;
       let len = 0;
@@ -3846,8 +3846,8 @@ var require_schemes = __commonJS({
         wsComponent.secure = void 0;
       }
       if (wsComponent.resourceName) {
-        const [path4, query] = wsComponent.resourceName.split("?");
-        wsComponent.path = path4 && path4 !== "/" ? path4 : void 0;
+        const [path5, query] = wsComponent.resourceName.split("?");
+        wsComponent.path = path5 && path5 !== "/" ? path5 : void 0;
         wsComponent.query = query;
         wsComponent.resourceName = void 0;
       }
@@ -7477,10 +7477,10 @@ function assignProp(target, prop, value) {
     configurable: true
   });
 }
-function getElementAtPath(obj, path4) {
-  if (!path4)
+function getElementAtPath(obj, path5) {
+  if (!path5)
     return obj;
-  return path4.reduce((acc, key) => acc?.[key], obj);
+  return path5.reduce((acc, key) => acc?.[key], obj);
 }
 function promiseAllObject(promisesObj) {
   const keys = Object.keys(promisesObj);
@@ -7800,11 +7800,11 @@ function aborted(x, startIndex = 0) {
   }
   return false;
 }
-function prefixIssues(path4, issues) {
+function prefixIssues(path5, issues) {
   return issues.map((iss) => {
     var _a;
     (_a = iss).path ?? (_a.path = []);
-    iss.path.unshift(path4);
+    iss.path.unshift(path5);
     return iss;
   });
 }
@@ -13522,8 +13522,8 @@ var LaError = class extends Error {
   status;
   body;
   customFriendly;
-  constructor(status, body, path4, friendly2) {
-    super(`LimoAnywhere error ${status} on ${path4}`);
+  constructor(status, body, path5, friendly2) {
+    super(`LimoAnywhere error ${status} on ${path5}`);
     this.status = status;
     this.body = body;
     this.customFriendly = friendly2;
@@ -13875,6 +13875,213 @@ async function startSetupPage() {
   } catch {
     return startInProcessPage(token);
   }
+}
+
+// dist/la/update.js
+import { spawnSync } from "node:child_process";
+import { cpSync, existsSync as existsSync3, mkdirSync as mkdirSync3, readFileSync as readFileSync3, writeFileSync as writeFileSync3 } from "node:fs";
+import { homedir as homedir2 } from "node:os";
+import path4 from "node:path";
+import { fileURLToPath as fileURLToPath2 } from "node:url";
+import { gunzipSync } from "node:zlib";
+var MARKETPLACE_REPO = "Booked-Rides/otto-ai-marketplace";
+var PLUGIN_NAME = "otto-ai-plugin";
+var MARKETPLACE_KEY = "otto-ai-marketplace";
+var FETCH_TIMEOUT_MS = 5e3;
+var RESTART_HOWTO = "The new version takes effect after Claude Desktop is FULLY quit and reopened (Mac: Cmd+Q; Windows: right-click the Claude tray icon near the clock and choose Exit) \u2014 until then the current version keeps running.";
+var manifestUrl = () => process.env.MILES_UPDATE_MANIFEST_URL?.trim() || `https://raw.githubusercontent.com/${MARKETPLACE_REPO}/main/.claude-plugin/marketplace.json`;
+var tarballUrl = () => process.env.MILES_UPDATE_TARBALL_URL?.trim() || `https://codeload.github.com/${MARKETPLACE_REPO}/tar.gz/refs/heads/main`;
+var claudePluginsDir = () => process.env.MILES_CLAUDE_PLUGINS_DIR?.trim() || path4.join(homedir2(), ".claude", "plugins");
+var readJson = (file) => {
+  try {
+    return JSON.parse(readFileSync3(file, "utf8"));
+  } catch {
+    return void 0;
+  }
+};
+function installedPluginRoot() {
+  const fromEnv = process.env.MILES_PLUGIN_ROOT?.trim();
+  const moduleDir = path4.dirname(fileURLToPath2(import.meta.url));
+  const candidates = fromEnv ? [fromEnv] : [path4.resolve(moduleDir, ".."), moduleDir];
+  return candidates.find((c) => existsSync3(path4.join(c, ".claude-plugin", "plugin.json")));
+}
+function installedPluginVersion() {
+  const root = installedPluginRoot();
+  if (!root)
+    return void 0;
+  const manifest = readJson(path4.join(root, ".claude-plugin", "plugin.json"));
+  const version2 = manifest?.version;
+  return typeof version2 === "string" && version2 ? version2 : void 0;
+}
+function compareVersions(a, b) {
+  const parse4 = (v) => v.split(".").map((s) => Number.parseInt(s, 10) || 0);
+  const [as, bs] = [parse4(a), parse4(b)];
+  for (let i = 0; i < Math.max(as.length, bs.length); i += 1) {
+    const diff = (as[i] ?? 0) - (bs[i] ?? 0);
+    if (diff !== 0)
+      return diff;
+  }
+  return 0;
+}
+var versionFromMarketplaceManifest = (manifest) => {
+  const plugins = manifest?.plugins;
+  if (!Array.isArray(plugins))
+    return void 0;
+  const entry = plugins.find((p) => typeof p === "object" && p !== null && p.name === PLUGIN_NAME);
+  return typeof entry?.version === "string" ? entry.version : void 0;
+};
+async function fetchLatestVersion() {
+  try {
+    const res = await fetch(manifestUrl(), { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) });
+    if (!res.ok)
+      return void 0;
+    return versionFromMarketplaceManifest(await res.json());
+  } catch {
+    return void 0;
+  }
+}
+var settingsFilePath = () => path4.join(path4.dirname(credentialsFilePath()), "la-settings.json");
+function autoUpdateEnabled() {
+  return readJson(settingsFilePath())?.autoUpdate === true;
+}
+function setAutoUpdate(enabled) {
+  const file = settingsFilePath();
+  mkdirSync3(path4.dirname(file), { recursive: true });
+  const current = readJson(file) ?? {};
+  writeFileSync3(file, JSON.stringify({ ...current, autoUpdate: enabled }, null, 2) + "\n");
+}
+var gitAvailable = () => spawnSync("git", ["--version"], { stdio: "ignore" }).status === 0;
+var refreshWithGit = (cloneDir) => {
+  const run = (args) => spawnSync("git", args, { cwd: cloneDir, stdio: "ignore" }).status === 0;
+  return run(["fetch", "--depth", "1", "origin", "main"]) && run(["reset", "--hard", "origin/main"]);
+};
+var headerString = (buf, start, len) => buf.toString("utf8", start, start + len).replace(/\0[\s\S]*$/, "");
+function extractRepoTarball(tarGz, destDir) {
+  const buf = gunzipSync(tarGz);
+  let offset = 0;
+  let longName;
+  while (offset + 512 <= buf.length) {
+    const header = buf.subarray(offset, offset + 512);
+    if (header.every((b) => b === 0))
+      break;
+    const size = Number.parseInt(headerString(header, 124, 12).trim() || "0", 8) || 0;
+    const type = String.fromCharCode(header[156] || 48);
+    const data = buf.subarray(offset + 512, offset + 512 + size);
+    offset += 512 + Math.ceil(size / 512) * 512;
+    if (type === "L") {
+      longName = data.toString("utf8").replace(/\0[\s\S]*$/, "");
+      continue;
+    }
+    const prefix = headerString(header, 345, 155);
+    const rawName = headerString(header, 0, 100);
+    const name = longName ?? (prefix ? `${prefix}/${rawName}` : rawName);
+    longName = void 0;
+    if (type !== "0" && type !== "\0" && type !== "5")
+      continue;
+    const segments = name.split("/").filter((s) => s.length > 0);
+    segments.shift();
+    if (segments.length === 0 || segments.some((s) => s === ".."))
+      continue;
+    const dest = path4.join(destDir, ...segments);
+    if (!path4.resolve(dest).startsWith(path4.resolve(destDir) + path4.sep))
+      continue;
+    if (type === "5") {
+      mkdirSync3(dest, { recursive: true });
+    } else {
+      mkdirSync3(path4.dirname(dest), { recursive: true });
+      writeFileSync3(dest, data);
+    }
+  }
+}
+async function refreshWithTarball(cloneDir) {
+  try {
+    const res = await fetch(tarballUrl(), { signal: AbortSignal.timeout(3e4) });
+    if (!res.ok)
+      return false;
+    extractRepoTarball(Buffer.from(await res.arrayBuffer()), cloneDir);
+    return true;
+  } catch {
+    return false;
+  }
+}
+var marketplaceCloneDir = () => {
+  const known = readJson(path4.join(claudePluginsDir(), "known_marketplaces.json"));
+  if (!known)
+    return void 0;
+  for (const entry of Object.values(known)) {
+    const e = entry;
+    const src = `${e.source?.url ?? ""} ${e.source?.repo ?? ""}`;
+    if (src.includes(MARKETPLACE_KEY) && e.installLocation)
+      return e.installLocation;
+  }
+  return void 0;
+};
+var installedEntries = () => {
+  const file = readJson(path4.join(claudePluginsDir(), "installed_plugins.json"));
+  const plugins = file?.plugins ?? {};
+  return Object.entries(plugins).filter(([, v]) => Array.isArray(v)).map(([key, entries]) => ({ key, entries }));
+};
+var ADD_MARKETPLACE_HOWTO = 'In Claude Desktop, open Customize -> Plugins -> Add marketplace, enter Booked-Rides/otto-ai-marketplace, then install "Otto AI by Limo Marketer". The saved LimoAnywhere login survives a reinstall.';
+async function applyUpdate() {
+  const installed = installedPluginVersion();
+  if (!installed) {
+    return "This copy of Otto AI isn't a marketplace install (it looks like a developer build), so there's nothing to update here. Client machines update from the otto-ai marketplace.";
+  }
+  const cloneDir = marketplaceCloneDir();
+  if (!cloneDir || !existsSync3(cloneDir)) {
+    return `The Otto AI marketplace isn't set up on this machine, so updates can't arrive. ${ADD_MARKETPLACE_HOWTO}`;
+  }
+  if (!process.env.MILES_UPDATE_SKIP_REFRESH) {
+    const viaGit = existsSync3(path4.join(cloneDir, ".git")) && gitAvailable() && refreshWithGit(cloneDir);
+    if (!viaGit && !await refreshWithTarball(cloneDir)) {
+      return "Couldn't reach the update server \u2014 this machine may be offline. Check the internet connection and try again.";
+    }
+  }
+  const latest = versionFromMarketplaceManifest(readJson(path4.join(cloneDir, ".claude-plugin", "marketplace.json")));
+  if (!latest) {
+    return `The marketplace copy on this machine looks broken (no version manifest). Reinstalling fixes it: ${ADD_MARKETPLACE_HOWTO}`;
+  }
+  if (compareVersions(latest, installed) <= 0) {
+    return `Otto AI is already up to date (v${installed}).`;
+  }
+  const source = path4.join(cloneDir, PLUGIN_NAME);
+  if (!existsSync3(path4.join(source, ".claude-plugin", "plugin.json"))) {
+    return "The refreshed marketplace has no plugin package in it \u2014 that's a release problem on Limo Marketer's side, not this machine. Report it to support.";
+  }
+  const all = installedEntries();
+  const targets = all.filter(({ key }) => key.startsWith(`${PLUGIN_NAME}@`)).flatMap(({ entries }) => entries.map((e) => e.installPath)).filter((p) => typeof p === "string" && existsSync3(p));
+  if (targets.length === 0) {
+    const preRename = all.some(({ key }) => key.startsWith("miles-ai@"));
+    return preRename ? `This install predates the plugin's rename and can't update in place. One-time fix: uninstall the old plugin, then reinstall. ${ADD_MARKETPLACE_HOWTO}` : `This plugin wasn't installed from the marketplace (probably a zip upload), so it can't self-update. ${ADD_MARKETPLACE_HOWTO}`;
+  }
+  for (const target of targets) {
+    cpSync(source, target, { recursive: true });
+  }
+  return `Updated Otto AI v${installed} -> v${latest}. ${RESTART_HOWTO}`;
+}
+var noticeMemo;
+async function computeNotice() {
+  try {
+    const installed = installedPluginVersion();
+    if (!installed)
+      return void 0;
+    const latest = await fetchLatestVersion();
+    if (!latest || compareVersions(latest, installed) <= 0)
+      return void 0;
+    if (autoUpdateEnabled()) {
+      const report = await applyUpdate();
+      return `---
+Note for the assistant: automatic updates are ON and Otto AI just updated itself in the background: ${report} Pass that on to the operator in one short sentence.`;
+    }
+    return `---
+Note for the assistant: Otto AI v${latest} is available (this machine runs v${installed}). After answering, mention it in one sentence and offer to update \u2014 the la_update tool installs it, and a full Claude Desktop restart activates it.`;
+  } catch {
+    return void 0;
+  }
+}
+function updateNotice() {
+  noticeMemo ??= computeNotice();
+  return noticeMemo;
 }
 
 // node_modules/zod/v3/external.js
@@ -14355,8 +14562,8 @@ function getErrorMap() {
 
 // node_modules/zod/v3/helpers/parseUtil.js
 var makeIssue = (params) => {
-  const { data, path: path4, errorMaps, issueData } = params;
-  const fullPath = [...path4, ...issueData.path || []];
+  const { data, path: path5, errorMaps, issueData } = params;
+  const fullPath = [...path5, ...issueData.path || []];
   const fullIssue = {
     ...issueData,
     path: fullPath
@@ -14472,11 +14679,11 @@ var errorUtil;
 
 // node_modules/zod/v3/types.js
 var ParseInputLazyPath = class {
-  constructor(parent, value, path4, key) {
+  constructor(parent, value, path5, key) {
     this._cachedPath = [];
     this.parent = parent;
     this.data = value;
-    this._path = path4;
+    this._path = path5;
     this._key = key;
   }
   get path() {
@@ -18048,11 +18255,11 @@ function normalizeObjectSchema(schema) {
   }
   return void 0;
 }
-function getDotPath(path4) {
-  if (path4.length === 0) {
+function getDotPath(path5) {
+  if (path5.length === 0) {
     return "object root";
   }
-  return path4.reduce((acc, seg, index) => {
+  return path5.reduce((acc, seg, index) => {
     if (index === 0) {
       return String(seg);
     }
@@ -22223,8 +22430,8 @@ var GHL_API_VERSION = "2021-07-28";
 var GhlError = class extends Error {
   status;
   body;
-  constructor(status, body, path4) {
-    super(`GoHighLevel API error ${status} on ${path4}`);
+  constructor(status, body, path5) {
+    super(`GoHighLevel API error ${status} on ${path5}`);
     this.status = status;
     this.body = body;
   }
@@ -24723,10 +24930,10 @@ var LA_READ_ALLOWLIST = {
   "/admin/_forms/schedulerDataBackEnd.asp": { formMethod: /* @__PURE__ */ new Set(["schedulerDataLoad"]) },
   "/adminnew/ajax/GetVerificationToken": {}
 };
-function assertReadOnly(path4, url, opts) {
+function assertReadOnly(path5, url, opts) {
   const rule = LA_READ_ALLOWLIST[url.pathname];
   const refuse = (why) => {
-    throw new LaError(403, why, path4, `Refused by Otto's read-only guard: ${why}. Otto never changes anything in LimoAnywhere \u2014 it only reads.`);
+    throw new LaError(403, why, path5, `Refused by Otto's read-only guard: ${why}. Otto never changes anything in LimoAnywhere \u2014 it only reads.`);
   };
   if (!rule)
     refuse(`"${url.pathname}" isn't an allowlisted read screen`);
@@ -24748,13 +24955,13 @@ function looksLoggedOut(res, text) {
     return true;
   return res.status === 200 && /name="Login"[\s\S]{0,2000}loginNow\.asp/i.test(text.slice(0, 2e4));
 }
-async function laFetch(creds, path4, opts = {}) {
-  const url = new URL(path4, LA_BASE);
+async function laFetch(creds, path5, opts = {}) {
+  const url = new URL(path5, LA_BASE);
   for (const [k, v] of Object.entries(opts.query ?? {})) {
     if (v !== void 0)
       url.searchParams.set(k, String(v));
   }
-  assertReadOnly(path4, url, opts);
+  assertReadOnly(path5, url, opts);
   const doFetch = async (freshLogin) => {
     const session = freshLogin ? await laLogin(creds) : await getSession(creds);
     const headers2 = {
@@ -24780,14 +24987,14 @@ async function laFetch(creds, path4, opts = {}) {
     invalidateSession(creds);
     ({ res, text } = await doFetch(true));
     if (looksLoggedOut(res, text)) {
-      throw new LaError(401, "still logged out after re-login", path4, "LimoAnywhere keeps bouncing us to its login page even after logging in again. The credentials may lack permission for this screen, or LimoAnywhere is having trouble \u2014 try again shortly.");
+      throw new LaError(401, "still logged out after re-login", path5, "LimoAnywhere keeps bouncing us to its login page even after logging in again. The credentials may lack permission for this screen, or LimoAnywhere is having trouble \u2014 try again shortly.");
     }
   }
   if (res.status === 429) {
-    throw new LaError(429, text, path4);
+    throw new LaError(429, text, path5);
   }
   if (res.status >= 400) {
-    throw new LaError(res.status, text, path4);
+    throw new LaError(res.status, text, path5);
   }
   return text;
 }
@@ -29983,6 +30190,29 @@ var laRevenueSummaryTool = {
   }
 };
 
+// dist/tools/limoanywhere/laUpdate.js
+var laUpdateTool = {
+  name: "la_update",
+  title: "Update Otto AI",
+  description: "Updates this Otto AI plugin to the latest release from the Limo Marketer marketplace, in place on this machine (a full Claude Desktop restart activates it). With automatic_updates set, it instead turns background auto-update on or off for future sessions. Safe to call to check for updates \u2014 it says when everything is already current.",
+  kind: "setup",
+  inputSchema: {
+    automatic_updates: external_exports.enum(["on", "off"]).optional().describe("Turn background auto-update on or off instead of updating right now. When on, the server updates itself at the start of a session and says so.")
+  },
+  logArgs: (args) => ({ automatic_updates: args.automatic_updates }),
+  handler: async (_deps, args) => {
+    const toggle = args.automatic_updates;
+    if (toggle === "on" || toggle === "off") {
+      const enable = toggle === "on";
+      setAutoUpdate(enable);
+      return enable ? "Automatic updates are ON. Otto AI will keep itself current in the background and mention it whenever a new version has been installed (a full Claude Desktop restart activates each update). Turn it off anytime with la_update automatic_updates=off." : "Automatic updates are OFF. Updates now happen only when someone runs /otto-update or asks for one.";
+    }
+    const report = await applyUpdate();
+    const autoHint = autoUpdateEnabled() ? "" : " (Tip for the assistant: if the operator hasn't been asked before, offer automatic updates \u2014 la_update automatic_updates=on.)";
+    return report + autoHint;
+  }
+};
+
 // dist/tools/index.js
 var GHL_READ_TOOLS = [
   checkConnectionTool,
@@ -30009,7 +30239,7 @@ var LA_TOOLS = [
   laQuoteConversionReportTool,
   laRevenueSummaryTool
 ];
-var LA_SETUP_TOOLS = [laConnectStartTool, laConnectTool];
+var LA_SETUP_TOOLS = [laConnectStartTool, laConnectTool, laUpdateTool];
 var GHL_WRITE_TOOLS = [
   prepareSendMessageTool,
   prepareUpdateTagsTool,
@@ -30046,13 +30276,25 @@ function buildMcpServer(cfg, onToolCall, gate, opts = {}) {
     instructions: opts.instructions ?? DEFAULT_INSTRUCTIONS
   });
   const deps = { cfg, gate };
+  let noticePending = opts.notice !== void 0;
   for (const tool of opts.tools ?? GHL_TOOLS) {
     server.registerTool(tool.name, { title: tool.title, description: tool.description, inputSchema: tool.inputSchema }, async (rawArgs) => {
       const args = rawArgs ?? {};
       const logged = tool.logArgs?.(args);
       const startedAt = Date.now();
       try {
-        const text = await tool.handler(deps, args);
+        let text = await tool.handler(deps, args);
+        if (noticePending) {
+          noticePending = false;
+          try {
+            const extra = await opts.notice?.();
+            if (extra)
+              text = `${text}
+
+${extra}`;
+          } catch {
+          }
+        }
         onToolCall?.({ tool: tool.name, ok: true, durationMs: Date.now() - startedAt, args: logged });
         return { content: [{ type: "text", text }] };
       } catch (err) {
@@ -30108,11 +30350,13 @@ if (process.argv.includes(SETUP_LAUNCHER_FLAG)) {
     envFile: base.envFile,
     setupHint: SETUP_HINT
   };
+  void updateNotice();
   const server = buildMcpServer(cfg, void 0, void 0, {
     tools: [...LA_TOOLS, ...LA_SETUP_TOOLS],
     name: "otto-limoanywhere",
     title: "Otto AI by Limo Marketer",
-    instructions: LA_INSTRUCTIONS
+    instructions: LA_INSTRUCTIONS,
+    notice: updateNotice
   });
   await server.connect(new StdioServerTransport());
 }

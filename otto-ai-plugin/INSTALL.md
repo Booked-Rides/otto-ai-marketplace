@@ -47,7 +47,7 @@ which npm's scoped package directories use.) You should see:
 
 ```
 Verifying the packaged server starts standalone...
-  ok — 10 LimoAnywhere tools
+  ok — 11 LimoAnywhere tools
 
 Plugin package ready: plugins/otto-ai-plugin
 ```
@@ -137,15 +137,28 @@ Pushing a release to the marketplace repo is **not** enough for clients to
 receive it: Claude Desktop keeps auto-update **off by default for third-party
 marketplaces**, and the local marketplace clone
 (`~/.claude/plugins/marketplaces/otto-ai`) stays frozen at the install-day
-commit until something refreshes it. Three ways an update actually lands:
+commit until something refreshes it. Since v0.8.0 the plugin handles this
+itself:
 
-1. **`/otto-update`** (ships with the plugin since v0.6.0) — refreshes the
-   marketplace clone, updates the installed files, and tells the operator to
-   restart. This is what to tell clients.
-2. The operator enables **auto-update for the otto-ai marketplace** in the
-   plugin manager — then updates install themselves shortly after a session
-   starts (a restart still activates them).
-3. The built-in `/plugin marketplace update otto-ai` typed by the operator.
+1. **Update notice** — the server checks the marketplace once per session
+   (fail-silent, no delay) and appends a one-line "vX is available" note to
+   the first tool result, so Claude offers the update unprompted.
+2. **`la_update` tool** — installs the newest release in place, on the host,
+   on every OS (the chat shell can't touch the host on Windows — that's why
+   this is a server tool, not a shell recipe). Works via git when present,
+   plain HTTPS otherwise, and never executes what it downloads: the new code
+   runs only after a full Claude Desktop restart. `/otto-update` is now just
+   this tool plus plain-language reporting.
+3. **Automatic updates (opt-in)** — `/otto-setup` offers it once; `la_update
+   automatic_updates=on` records it, and from then on the server updates
+   itself at session start and says so. The Aug 17 decision doc's rejection
+   of *silent* self-updaters holds: explicit opt-in, pinned source
+   (`Booked-Rides/otto-ai-marketplace`), and every applied update is
+   announced in-chat.
+
+Manual paths still work: the operator can enable Claude's own marketplace
+auto-update in the plugin manager, or type
+`/plugin marketplace update otto-ai`.
 
 **Installs from before the `otto-ai-plugin` rename** (installed as
 `miles-ai@otto-ai`) have no update path at all — the name no longer exists in
@@ -229,8 +242,10 @@ If you're working on this rather than only testing it:
 - `src/la/` — the LimoAnywhere access layer. **Read-only by construction:**
   every request funnels through `laFetch`, whose `LA_READ_ALLOWLIST` refuses
   anything not on the known read screens. `npm run test:isolation` audits this.
-- `src/tools/limoanywhere/` — the eight `la_*` read tools plus the two setup
-  tools (`la_connect_start`, `la_connect`).
+- `src/tools/limoanywhere/` — the eight `la_*` read tools plus the three setup
+  tools (`la_connect_start`, `la_connect`, `la_update` — self-update lives in
+  the server because it's the only part of the plugin that always runs on the
+  operator's host; see `src/la/update.ts`).
 - `plugins/otto-ai-plugin/` — the plugin package (skill, commands, manifests).
 - `scripts/build-plugin.mjs` — assembles and verifies the package.
 - `scripts/release-plugin.mjs` — stages a release into the marketplace repo.

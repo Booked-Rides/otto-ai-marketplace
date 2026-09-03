@@ -54,8 +54,11 @@ next step if anything is broken. Common cases:
   `/otto-setup` step 0, then fully quit and reopen Claude Desktop).
 - *LimoAnywhere says it isn't connected* → run `/otto-setup`.
 - *Something that was supposedly fixed is still broken* → the plugin may be
-  stale; auto-update is off by default for this marketplace. Run
-  `/otto-update`.
+  stale. Call the `la_update` tool (that's all `/otto-update` does) and have
+  them restart Claude Desktop. If they haven't chosen before, offer automatic
+  updates (`la_update` with `automatic_updates: "on"`).
+- *A tool result ends with a note that a newer version is available* → relay
+  it in one sentence and offer to update right then.
 - *LimoAnywhere rejects the login* → the password likely changed. Run
   `/otto-setup` again with current credentials.
 - *LimoAnywhere is erroring or timing out* → their system may be down; check

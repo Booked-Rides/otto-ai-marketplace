@@ -6,66 +6,48 @@ Update this plugin to the latest release. The operator is not technical:
 report what you did and what to do next in plain language, never raw paths or
 JSON unless something needs fixing.
 
-Background you need: Claude Desktop keeps a git clone of the Otto AI
-marketplace at `~/.claude/plugins/marketplaces/otto-ai` and records installs
-in `~/.claude/plugins/installed_plugins.json`. Auto-update is off by default
-for non-Anthropic marketplaces, so this clone goes stale until something
-refreshes it — that's what this command does.
-
 Do this:
 
-1. **Preflight.** Run `git --version`. If git is missing, updates can't work:
-   tell the operator to install it (macOS: run `xcode-select --install` in
-   Terminal; Windows: the installer from https://git-scm.com), then stop.
+1. Call the **`la_update`** tool with no arguments. It runs on this machine
+   (inside the plugin's own server, so it works the same on Mac and Windows),
+   refreshes the marketplace, and installs the newest release in place. It
+   needs no git and asks for nothing.
 
-2. **Find the marketplace clone.** Expect `~/.claude/plugins/marketplaces/otto-ai`
-   with a git origin containing `otto-ai-marketplace`. If the folder name
-   differs, find the right one by grepping
-   `~/.claude/plugins/known_marketplaces.json` for `otto-ai-marketplace`. If
-   there's no clone at all, the marketplace was never added: tell the operator
-   to open **Customize → Plugins → Add marketplace**, enter
-   `Booked-Rides/otto-ai-marketplace`, install **Otto AI by Limo Marketer**,
-   and stop.
+2. Relay its answer in plain language. The outcomes it can report:
+   - **Updated** → tell the operator to **fully quit and reopen Claude
+     Desktop** (Mac: Cmd+Q; Windows: system tray icon → Exit) — the new
+     version takes effect on restart — then run `/otto-doctor` in a new chat
+     to confirm.
+   - **Already up to date** → say so, done.
+   - **Marketplace not set up / installed by zip / pre-rename install** → the
+     tool's message contains the exact fix (usually: Customize → Plugins →
+     Add marketplace → `Booked-Rides/otto-ai-marketplace`, install **Otto AI
+     by Limo Marketer**). Walk them through it; their saved LimoAnywhere
+     login survives a reinstall.
+   - **Offline** → try again when the machine has internet.
 
-3. **Refresh it.** The clone is shallow, so fetch and reset rather than pull:
+3. If they haven't chosen before, offer **automatic updates** once: "Want
+   Otto to keep itself up to date from now on?" If yes, call `la_update` with
+   `automatic_updates: "on"`. From then on the plugin updates itself at the
+   start of a session and says so — each update still takes effect at the
+   next full restart.
 
-   ```bash
-   git -C ~/.claude/plugins/marketplaces/otto-ai fetch --depth 1 origin main
-   git -C ~/.claude/plugins/marketplaces/otto-ai reset --hard origin/main
-   ```
+**If the `la_update` tool doesn't exist in this session:** the installed
+plugin predates self-update (v0.7.x or older), so this one time the update is
+manual — and on Windows it can't be done from this chat at all (the shell
+here is a sandbox). Mac: run these two lines in the shell, then copy the
+refreshed files over the installed copy listed in
+`~/.claude/plugins/installed_plugins.json` (key `otto-ai-plugin@otto-ai`):
 
-   Then read the latest version from the clone's
-   `.claude-plugin/marketplace.json`.
+```bash
+git -C ~/.claude/plugins/marketplaces/otto-ai fetch --depth 1 origin main
+git -C ~/.claude/plugins/marketplaces/otto-ai reset --hard origin/main
+```
 
-4. **Update the installed copy.** In
-   `~/.claude/plugins/installed_plugins.json`, find the entry for this
-   marketplace (the key ends in `@otto-ai`) and note its `installPath` and
-   `version`.
+```bash
+cp -R ~/.claude/plugins/marketplaces/otto-ai/otto-ai-plugin/. "<installPath>/"
+```
 
-   - **`otto-ai-plugin@otto-ai`, version already the latest** → say they're
-     up to date and stop.
-   - **`otto-ai-plugin@otto-ai`, older version** → copy the refreshed plugin
-     over the installed files, in place:
-
-     ```bash
-     cp -R ~/.claude/plugins/marketplaces/otto-ai/otto-ai-plugin/. "<installPath>/"
-     ```
-
-     Don't delete anything and don't edit `installed_plugins.json` — the
-     version it displays may lag behind, but the files are what run.
-   - **`miles-ai@otto-ai`** → this install predates the plugin's rename and
-     can't be updated in place. One-time fix, in **Customize → Plugins**:
-     uninstall the old plugin, then install **Otto AI by Limo Marketer** from
-     the marketplace (already refreshed in step 3). Their saved LimoAnywhere
-     login survives this — the new version still reads it, no `/otto-setup`
-     needed.
-   - **No `@otto-ai` entry** → the plugin was installed some other way (e.g. a
-     zip upload). Recommend installing from the marketplace instead so future
-     updates work, via **Customize → Plugins → Add marketplace**.
-
-5. **Finish.** If files changed, tell the operator to **fully quit and reopen
-   Claude Desktop** — the update takes effect on restart — then run
-   `/otto-doctor` in a new chat to confirm. Mention once that they can make
-   this automatic by enabling auto-update for the **otto-ai** marketplace in
-   the plugin manager (Claude Desktop leaves it off by default for
-   third-party marketplaces).
+Windows on an old version: have the operator open **Customize → Plugins**,
+uninstall Otto AI, and reinstall it from the marketplace — the saved
+LimoAnywhere login survives. Then restart Claude Desktop.

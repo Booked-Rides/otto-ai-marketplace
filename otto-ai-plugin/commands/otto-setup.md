@@ -122,6 +122,13 @@ Do this:
    them first that the password will appear in this conversation's history,
    and get their okay before proceeding.
 
+5. Once connected, offer **automatic updates** in one sentence: "Want Otto to
+   keep itself up to date automatically?" If yes, call `la_update` with
+   `automatic_updates: "on"` — the plugin will then update itself at the
+   start of a session and say so (each update takes effect at the next full
+   Claude Desktop restart). If they decline, don't ask again; `/otto-update`
+   stays available.
+
 If the login is rejected, the likely causes are a typo, a recently changed
 password, or a user without permission for the quotes and calendar screens.
 
